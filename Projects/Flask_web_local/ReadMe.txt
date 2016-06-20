@@ -11,4 +11,4 @@ sudo pip install flask-migrate
 
 
 mconfig/config.py   #存储配置
-Manager.py   #用于启动程序
+Manager.py  runserver -d -r -h 0.0.0.0 -p 9999   #用于启动程序
