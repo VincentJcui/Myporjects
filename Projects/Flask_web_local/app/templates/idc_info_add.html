@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="/static/image/favicon.ico">
+    <title>烈焰畅游运维管理</title>
+    <link href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/base.css" rel="stylesheet">
+    <script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top "style="background-color:darkslategray">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="/idc/info/">烈焰畅游运维管理系统</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a> 欢迎 {{ session.get('username',{}).get('username','') }}</a></li>
+            <li><a href="/login/">登出</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar">
+            <li class="active"><a href="/idc/info/addpage/">IDC信息添加 <span class="sr-only">(current)</span></a></li>
+            <li><a href="/idc/info/">返回</a></li>
+          </ul>
+          <ul class="nav nav-sidebar">
+          </ul>
+          <ul class="nav nav-sidebar">
+          </ul>
+        </div>
+        <div class="col-md-6 col-md-offset-2 main">
+            <form action="/idc/info/add/" method="post" class="form-horizontal" role="form">
+                <div class="form-group">
+                    <label for="inputuidcname" class="col-md-2 control-label">机房名字</label>
+                    <div class="col-md-6">
+                        <select name="idcname" class="col-md-2 form-control">
+                            <option value="网宿CDN">网宿CDN</option>
+                            <option value="Ucloud云">Ucloud云</option>
+                            <option value="腾讯CDN">腾讯CDN</option>
+                            <option value="帝联CDN">帝联CDN</option>
+                            <option value="帝联太原">帝联太原</option>
+                            <option value="高升沈阳">高升沈阳</option>
+                            <option value="帝联衡阳" selected="selected">帝联衡阳</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputdate" class="col-md-2 control-label">发生月份</label>
+                    <div class="col-md-6">
+                        <input type="month" class="form-control" name="date" value="" id="inputdate" placeholder="" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputcabinet" class="col-md-2 control-label">机柜数量</label>
+                    <div class="col-md-6">
+                        <select name="cabinet" class="col-md-2 form-control">
+                            <option value="2">2(帝联衡阳)</option>
+                            <option value="1">1</option>
+                            <option value="0" selected="selected">0</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputcabinet_price" class="col-md-2 control-label">机柜单价</label>
+                    <div class="col-md-6">
+                        <select name="cabinet_price" class="col-md-2 form-control">
+                            <option value="4200">4200.00(帝联衡阳)</option>
+                            <option value="4500">4500.00(帝联太原)</option>
+                            <option value="4000">4000.00(高升沈阳)</option>
+                            <option value="0" selected="selected">0</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inpuhost_amount" class="col-md-2 control-label">主机租金</label>
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" name="host_amount" value=" 0" id="inpuhost_amount" placeholder="" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputbandwidth" class="col-md-2 control-label">带宽数量</label>
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" name="bandwidth" value="" id="inputbandwidth" placeholder="" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputbandwidth_price" class="col-md-2 control-label">带宽单价</label>
+                    <div class="col-md-6">
+                        <select name="bandwidth_price" class="col-md-2 form-control">
+                            <option value="21">21.00(帝联衡阳)</option>
+                            <option value="22">22.00(帝联太原)</option>
+                            <option value="16.70">16.70(高升沈阳)</option>
+                            <option value="80">80.00(Ucloud云)</option>
+                            <option value="0.12">0.12(帝联CDN)</option>
+                            <option value="0.11">0.11(腾讯CDN)</option>
+                            <option value="0.20" selected="selected">0.20(网宿CDN)</option>
+                        </select>
+                    </div>
+                </div>
+{#                <div class="form-group">#}
+{#                    <label for="inputbandwidth_amount" class="col-md-2 control-label">带宽租金</label>#}
+{#                    <div class="col-md-6">#}
+{#                        <input type="text" class="form-control" name="bandwidth_amount" value="" id="inputbandwidth_amount" placeholder="" required>#}
+{#                    </div>#}
+{#                </div>#}
+                <div class="form-group">
+                    <label for="inputstatus" class="col-md-2 control-label">结算状态</label>
+                    <div class="col-md-6">
+                        <select name="status" class="col-md-2 form-control">
+                            <option value="已结清">已结清</option>
+                            <option value="未结清" selected="selected">未结清</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputinfo" class="col-md-2 control-label">备注信息</label>
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" name="info" value=" " id="inputinfo" placeholder="">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-2 col-md-offset-2">
+                        {% if error %} <span class="bg-danger">{{ error }} </span>{% endif %}
+                    </div>
+                    <div class="col-md-2 col-md-offset-1">
+                        <button type="submit" class="btn btn-success">确认提交</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

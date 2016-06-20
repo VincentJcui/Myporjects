@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="/static/img/favicon.ico">
+    <title>烈焰畅游运维管理</title>
+    <link type="text/css" href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <link type="text/css" href="/static/css/base.css" rel="stylesheet">
+  </head>
+  <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top "style="background-color:darkslategray">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="/idc/info/">烈焰畅游运维管理系统</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a> 欢迎 {{ session.get('username',{}).get('username','') }}</a></li>
+            <li><a href="/logout/">登出</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar">
+            <li class="active"><a href="/idc/info/">IDC信息 <span class="sr-only">(current)</span></a></li>
+            <li><a href="#">用户管理</a></li>
+            <!--<li><a href="#">Analytics</a></li>-->
+          </ul>
+          <ul class="nav nav-sidebar">
+            <!--<li><a href="">Nav item</a></li>-->
+          </ul>
+          <ul class="nav nav-sidebar">
+            <!--<li><a href="">Nav item again</a></li>-->
+          </ul>
+        </div>
+        <div class="col-md-10 col-md-offset-2 main">
+            <div id="container" style="min-width:400px;height:400px"></div>
+        </div>
+        <div class="col-md-10 col-md-offset-2 main">
+            <form>
+                <p>
+                    <a href="/idc/info/" methods="get"><input type="month" name="dates" value="{{ dates }}" class="btn btn-default" >&nbsp;<button type="submit" class="btn btn-success">历月查询</button></a>
+                    <a href="/idc/info/addpage/"><button type="button" class="btn btn-success" data-toggle="modal">添加信息</button></a>&nbsp;<span>{% for msg in get_flashed_messages() %}{{ msg }}{% endfor %}</span>
+                </p>
+              </form>
+          <!--<p><button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal">添加用户</button></a></p>-->
+          <div class="table-responsive">
+            <table class="table table-bordered table-striped table-hover info">
+              <thead align="center">
+                <tr >
+                    <td>月份</td>
+                    <td>机房</td>
+                    <td>机柜数量</td>
+                    <td>机柜单价</td>
+                    <td>主机租金</td>
+                    <td>带宽数量</td>
+                    <td>带宽单价</td>
+                    <td>带宽租金</td>
+                    <td>合计租金</td>
+                    <td>状态</td>
+                    <td>备注</td>
+                    <td>修改</td>
+                    <td>删除</td>
+                </tr>
+              </thead>
+              <tbody align="center" >
+                {% for info in list %}
+                    <tr class="warning">
+                        <td>{{ info['date'] }}</td>
+                        <td>{{ info['idcname'] }}</td>
+                        <td>{{ info['cabinet'] }}</td>
+                        <td>{{ info['cabinet_price'] }}</td>
+                        <td>{{ info['host_amount'] }}</td>
+                        <td>{{ info['bandwidth'] }}</td>
+                        <td>{{ info['bandwidth_price'] }}</td>
+                        <td>{{ info['bandwidth_amount'] }}</td>
+                        <td>{{ info['combined'] }}</td>
+                        <td>{{ info['status'] }}</td>
+                        <td>{{ info['info'] }}</td>
+                        <td><a href="/idc/info/modify/?id={{ info['id'] }}" ><div class="text-success">调整</div></a></td>
+                        <td><a href="/idc/info/delete/?id={{ info['id'] }}" ><div class="text-success">删除</div></a></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+                <tfoot align="center">
+                    <tr class="active">
+                        <td>本月总计</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>{{ all_combined }}</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tfoot>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript" src="/static/js/jquery-1.12.4.js"></script>
+    <script type="text/javascript" src="/static/js/highcharts.js"></script>
+    <script type="text/javascript" src="/static/js/charts.js"></script>
+    <script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
+  </body>
+</html>

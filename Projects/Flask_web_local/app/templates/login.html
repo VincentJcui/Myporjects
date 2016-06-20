@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="/static/img/favicon.ico">
+    <title>用户登陆页面</title>
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="/static/css/login.css" type="text/css">
+  </head>
+
+  <body>
+    <div class="container">
+      <form class="form-signin" action="/login/" method="post">
+        <h3 class="form-signin-heading" align="center">烈焰畅游运维管理</h3>
+        <label for="inputUsername" class="sr-only">用户名</label>
+        <input type="text" name="username" value="{{ username }}" id="inputUsername" class="form-control" placeholder="用户名" required autofocus>
+        <label for="inputPassword" class="sr-only">密码</label>
+        <input type="password" name="password" id="inputPassword" class="form-control" placeholder="密码" required>
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" id="write-cookie" value="remember-me"> 记住我 &nbsp;&nbsp;{% if error %} <span class="bg-danger">{{ error }}</span> {% endif %}
+          </label>
+        </div>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">登陆</button>
+      </form>
+
+    </div>
+{#    <script type="text/javascript" src="/static/js/jquery-1.12.4.js"></script>#}
+{#    <script type="text/javascript" src="/static/js/highcharts.js"></script>#}
+{#    <script type="text/javascript" src="/static/js/charts.js"></script>#}
+{#    <script type="text/javascript" src="/static/js/bootstrap.min.js"></script>#}
+{#    <script type="text/javascript" src="/static/js/jquery.cookie.js"></script>#}
+{#    <script type="application/javascript">#}
+{#        jQuery(document).ready(function () {#}
+{#            var username = jQuery('#inputUsername').val()#}
+{#            console.log(username)#}
+{#            jQuery('#wirte-cookie').bind('click',function () {#}
+{#                var username = jQuery('#inputUsername').val()#}
+{#                console.log(username)#}
+{#                jQuery.cookie('username',username,{ expires: 7, path: '/' });#}
+{#            });#}
+{#        })#}
+{#    </script>#}
+  </body>
+</html>
