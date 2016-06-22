@@ -83,7 +83,7 @@
                         <td>{{ info['bandwidth_price'] }}</td>
                         <td>{{ info['bandwidth_amount'] }}</td>
                         <td>{{ info['combined'] }}</td>
-                        <td>{{ info['status'] }}</td>
+                        <td id="mstats">{{ info['status'] }}</td>
                         <td>{{ info['info'] }}</td>
                         <td><a href="/idc/info/modify/?id={{ info['id'] }}" ><div class="text-success">调整</div></a></td>
                         <td><a href="/idc/info/delete/?id={{ info['id'] }}" ><div class="text-success">删除</div></a></td>
@@ -91,7 +91,7 @@
                 {% endfor %}
                 </tbody>
                 <tfoot align="center">
-                    <tr class="active">
+                    <tr class="table active">
                         <td>本月总计</td>
                         <td></td>
                         <td></td>

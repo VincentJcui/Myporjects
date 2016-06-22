@@ -37,4 +37,9 @@ $(function () {
     });
         console.log(data.all_data)  //调试使用
     })
+    
+    $("td:contains('未结清')").css("color","red");
+    
+    
+    
 });
