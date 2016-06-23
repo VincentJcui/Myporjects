@@ -41,10 +41,10 @@
             <!--<li><a href="">Nav item again</a></li>-->
           </ul>
         </div>
-        <div class="col-md-10 col-md-offset-2 main">
+        <div class="col-md-10 col-sm-10 col-md-offset-2 main">
             <div id="container" style="min-width:400px;height:400px"></div>
         </div>
-        <div class="col-md-10 col-md-offset-2 main">
+        <div class="col-md-10 col-sm-10 col-md-offset-2 main">
             <form>
                 <p>
                     <a href="/idc/info/" methods="get"><input type="month" name="dates" value="{{ dates }}" class="btn btn-default" >&nbsp;<button type="submit" class="btn btn-success">历月查询</button></a>
@@ -83,7 +83,7 @@
                         <td>{{ info['bandwidth_price'] }}</td>
                         <td>{{ info['bandwidth_amount'] }}</td>
                         <td>{{ info['combined'] }}</td>
-                        <td id="mstats">{{ info['status'] }}</td>
+                        <td>{{ info['status'] }}</td>
                         <td>{{ info['info'] }}</td>
                         <td><a href="/idc/info/modify/?id={{ info['id'] }}" ><div class="text-success">调整</div></a></td>
                         <td><a href="/idc/info/delete/?id={{ info['id'] }}" ><div class="text-success">删除</div></a></td>
