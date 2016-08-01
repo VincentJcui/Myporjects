@@ -35,6 +35,6 @@ def init_app():
     from main import main as main_blueprint
     app.register_blueprint(main_blueprint)
 
-    manager = Manager(app)
+    # manager = Manager(app)
 
-    return manager.run()
+    return app
