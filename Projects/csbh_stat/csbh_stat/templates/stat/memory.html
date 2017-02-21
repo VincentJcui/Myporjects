@@ -1,0 +1,40 @@
+{% if session.get('username',{}).get('username','') == '' %}
+    {% extends "stat/base.html" %}
+{% else %}
+    {% extends "user/base.html" %}
+{% endif %}
+{% block title %}游戏内存统计{% endblock %}
+{% block css %}{% endblock %}
+{% block req_url_7k7k %}/memory/?ptname=7k7k{% endblock %}
+{% block req_url_4399 %}/memory/?ptname=4399{% endblock %}
+{% block status_memory %}active{% endblock %}
+{% block main %}
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped table-hover info">
+          <thead align="center" >
+            <tr class="active">
+                <td width="60">日期</td>
+                <td width="60">平台</td>
+                <td width="60">0-500M</td>
+                <td width="60">500-700M</td>
+                <td width="60">700-900M</td>
+                <td width="30">900M以上</td>
+            </tr>
+          </thead>
+          <tbody align="center">
+            {% for memory in memory_list %}
+                <tr>
+                    <td>{{ memory['date'] }}</td>
+                    <td>{{ memory['ptname'] }}</td>
+                    <td>{{ memory['memory_500'] }}%</td>
+                    <td>{{ memory['memory_700'] }}%</td>
+                    <td>{{ memory['memory_900'] }}%</td>
+                    <td>{{ memory['memory_1100'] }}%</td>
+                </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+{% endblock %}

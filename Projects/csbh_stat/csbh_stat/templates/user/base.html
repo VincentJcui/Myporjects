@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="/static/favicon.ico">
+    <title>{% block title%}{% endblock %}</title>
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/base.css" rel="stylesheet">
+    {% block css %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar navbar-inverse navbar-fixed-top "style="background-color:darkslategray">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="/user/">烈焰畅游运维管理后台</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a> 欢迎 {{ session.get('username',{}).get('username','') }}</a></li>
+            <li><a href="/logout/">登出</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <div class="container-fluid">
+      <div class="row">
+            <div class="col-sm-1 col-md-1 sidebar">
+              <ul class="nav nav-sidebar">
+                <li class="{% block user %}{% endblock %}"><a href="/user/">用户管理 <span class="sr-only">(current)</span></a></li>
+                <li class="{% block idc_1 %}{% endblock %}"><a href="/idc/current/">IDC成本趋势</a></li>
+                <li class="{% block idc_2 %}{% endblock %}"><a href="/idc/detail/">IDC月度详单</a></li>
+{#                <li class="{% block charts %}{% endblock %}"><a href="/charts/">图表展示</a></li>#}
+                <li class="{% block operating %}{% endblock %}"><a href="/server/operating/">运营监测<span class="sr-only">(current)</span></a></li>
+                <li class="{% block manager %}{% endblock %}"><a href="/server/manager/">运维监测</a></li>
+                <li class="{% block status_enter %}{% endblock %}"><a href="/enter_game/">进入战斗统计<span class="sr-only">(current)</span></a></li>
+                <li class="{% block status_frame %}{% endblock %}"><a href="/frame/">战斗帧率统计</a></li>
+                <li class="{% block status_mouse %}{% endblock %}"><a href="/mouse/">鼠标移动统计</a></li>
+                <li class="{% block status_load %}{% endblock %}"><a href="/load/">游戏加载统计</a></li>
+                <li class="{% block status_memory %}{% endblock %}"><a href="/memory/">游戏内存统计</a></li>
+                <li class="{% block status_caton %}{% endblock %}"><a href="/caton/">游戏卡顿统计</a></li>
+              </ul>
+            </div>
+          <div class="col-md-11 col-sm-11 col-md-offset-1 col-sm-offset-1 main">
+            {% block main %}{% endblock %}
+          </div>
+      </div>
+    </div>
+    {% block dialog %}{% endblock%}
+    <script type="application/javascript" src="/static/js/jquery-1.12.4.js"></script>
+    <script type="application/javascript" src="/static/js/bootstrap.min.js"></script>
+    {% block script %}{% endblock %}
+    {% block javascipt %}{% endblock %}
+</body>
+</html>

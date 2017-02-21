@@ -1,0 +1,60 @@
+{% if session.get('username',{}).get('username','') == '' %}
+    {% extends "stat/base.html" %}
+{% else %}
+    {% extends "user/base.html" %}
+{% endif %}
+{% block title %}鼠标移动统计{% endblock %}
+{% block css %}{% endblock %}
+{% block req_url_7k7k %}/mouse/?ptname=7k7k{% endblock %}
+{% block req_url_4399 %}/mouse/?ptname=4399{% endblock %}
+{% block status_mouse %}active{% endblock %}
+{% block main %}
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped table-hover info">
+          <thead align="center" >
+            <tr class="active">
+                <td width="40">日期</td>
+                <td width="40">平台</td>
+                <td width="40">10-20ms</td>
+                <td width="40">20-30ms</td>
+                <td width="40">30-50ms</td>
+                <td width="40">50ms以上</td>
+                <td width="40">新手10-20ms</td>
+                <td width="40">新手20-30ms</td>
+                <td width="40">新手30-50ms</td>
+                <td width="40">新手50ms以上</td>
+                <td width="40">10-20ms日涨跌</td>
+                <td width="40">新手10-20ms日涨跌</td>
+                <td width="40">10-20ms周涨跌</td>
+                <td width="40">新手10-20ms周涨跌</td>
+                <td width="40">10-20ms月涨跌</td>
+                <td width="40">新手10-20ms月涨跌</td>
+            </tr>
+          </thead>
+          <tbody align="center">
+            {% for mouse in mouse_list %}
+                <tr>
+                    <td>{{ mouse['date'] }}</td>
+                    <td>{{ mouse['ptname'] }}</td>
+                    <td>{{ mouse['mouse_20'] }}%</td>
+                    <td>{{ mouse['mouse_30'] }}%</td>
+                    <td>{{ mouse['mouse_50'] }}%</td>
+                    <td>{{ mouse['mouse_75'] }}%</td>
+                    <td>{{ mouse['mouse_20_new'] }}%</td>
+                    <td>{{ mouse['mouse_30_new'] }}%</td>
+                    <td>{{ mouse['mouse_50_new'] }}%</td>
+                    <td>{{ mouse['mouse_75_new'] }}%</td>
+                    <td>{{ mouse['mouse_20_day']|safe }}</td>
+                    <td>{{ mouse['mouse_20_new_day']|safe }}</td>
+                    <td>{{ mouse['mouse_20_week']|safe }}</td>
+                    <td>{{ mouse['mouse_20_new_week']|safe }}</td>
+                    <td>{{ mouse['mouse_20_month']|safe }}</td>
+                    <td>{{ mouse['mouse_20_new_month']|safe }}</td>
+                </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+{% endblock %}

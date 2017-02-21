@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="/static/favicon.ico">
+    <title>{% block title%}{% endblock %}</title>
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/base.css" rel="stylesheet">
+    <link href="/static/css/datatable/jquery.dataTables.css" rel="stylesheet">
+    {% block css %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar navbar-inverse navbar-fixed-top "style="background-color:darkslategray">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="/">创世兵魂统计</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="{% block req_url_7k7k %}{% endblock %}">7K7K</a></li>
+            <li><a href="{% block req_url_4399 %}{% endblock %}">4399</a></li>
+            <li><a href="/entry/">管理后台</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <div class="container-fluid">
+      <div class="row">
+            <div class="col-sm-1 col-md-1 sidebar">
+              <ul class="nav nav-sidebar">
+                <li class="{% block status_enter %}{% endblock %}"><a href="/enter_game/">进入战斗统计<span class="sr-only">(current)</span></a></li>
+                <li class="{% block status_frame %}{% endblock %}"><a href="/frame/">战斗帧率统计</a></li>
+                <li class="{% block status_mouse %}{% endblock %}"><a href="/mouse/">鼠标移动统计</a></li>
+                <li class="{% block status_load %}{% endblock %}"><a href="/load/">游戏加载统计</a></li>
+                <li class="{% block status_memory %}{% endblock %}"><a href="/memory/">游戏内存统计</a></li>
+                <li class="{% block status_caton %}{% endblock %}"><a href="/caton/">游戏卡顿统计</a></li>
+              </ul>
+            </div>
+          <div class="col-md-11 col-sm-11 col-md-offset-1 col-sm-offset-1 main">
+            {% block main %}{% endblock %}
+          </div>
+      </div>
+    </div>
+    {% block dialog %}{% endblock%}
+    <script type="application/javascript" src="/static/js/jquery-1.12.4.js"></script>
+    <script type="application/javascript" src="/static/js/bootstrap.min.js"></script>
+    <script type="application/javascript" src="/static/js/datatable/jquery.dataTables.js"></script>
+    <script type="application/javascript" src="/static/js/datatable/dataTables.bootstrap.js"></script>
+    {% block script %}{% endblock %}
+    <script type="text/javascript">
+        jQuery(document).ready(function () {
+            jQuery('table').DataTable({
+                "ordering": false,   /*禁用排序功能*/
+                "bAutoWidth": true,   /**/
+                "bProcessing": false,  /**/
+                "iDisplayLength": 18,  /*默认每页加载的条目数*/
+                "bFilter":false,   /*检索对话框是否加载*/
+                "bLengthChange":false,  /*是否加载显示的条目数下拉列表*/
+                "bPaginate": true, /*是否使用分页功能,默认为true*/
+                language: {
+                    "sProcessing": "处理中...",
+                    "sLengthMenu": "显示 _MENU_ 项结果",
+                    "sZeroRecords": "没有匹配结果",
+                    "sInfo": "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+                    "sInfoEmpty": "显示第 0 至 0 项结果，共 0 项",
+                    "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+                    "sInfoPostFix": "",
+                    "sSearch": "搜索:",
+                    "sUrl": "",
+                    "sEmptyTable": "表中数据为空",
+                    "sLoadingRecords": "载入中...",
+                    "sInfoThousands": ",",
+                    "oPaginate": {
+                        "sFirst": "首页",
+                        "sPrevious": "上页",
+                        "sNext": "下页",
+                        "sLast": "末页"
+                    },
+                    "oAria": {
+                        "sSortAscending": ": 以升序排列此列",
+                        "sSortDescending": ": 以降序排列此列"
+                    }
+                }
+            })
+        })
+    </script>
+    {% block javascipt %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,56 @@
+{% if session.get('username',{}).get('username','') == '' %}
+    {% extends "stat/base.html" %}
+{% else %}
+    {% extends "user/base.html" %}
+{% endif %}
+{% block title %}战斗帧率统计{% endblock %}
+{% block css %}{% endblock %}
+{% block req_url_7k7k %}/frame/?ptname=7k7k{% endblock %}
+{% block req_url_4399 %}/frame/?ptname=4399{% endblock %}
+{% block status_frame %}active{% endblock %}
+{% block main %}
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped table-hover info">
+          <thead align="center" >
+            <tr class="active">
+                <td width="60">日期</td>
+                <td width="60">平台</td>
+                <td width="60">49帧以下</td>
+                <td width="60">49-55帧</td>
+                <td width="60">55帧以上</td>
+                <td width="30">新手49帧以下</td>
+                <td width="30">新手49-55帧</td>
+                <td width="30">新手55帧以上</td>
+                <td width="40">55帧以上日涨跌</td>
+                <td width="40">新手55帧以上日涨跌</td>
+                <td width="40">55帧以上周涨跌</td>
+                <td width="40">新手55帧以上周涨跌</td>
+                <td width="40">55帧以上月涨跌</td>
+                <td width="40">新手55帧以上月涨跌</td>
+            </tr>
+          </thead>
+          <tbody align="center">
+            {% for frame in frame_list %}
+                <tr>
+                    <td>{{ frame['date'] }}</td>
+                    <td>{{ frame['ptname'] }}</td>
+                    <td>{{ frame['frame_49'] }}%</td>
+                    <td>{{ frame['frame_55'] }}%</td>
+                    <td>{{ frame['frame_60'] }}%</td>
+                    <td>{{ frame['frame_49_new'] }}%</td>
+                    <td>{{ frame['frame_55_new'] }}%</td>
+                    <td>{{ frame['frame_60_new'] }}%</td>
+                    <td>{{ frame['frame_60_day']|safe }}</td>
+                    <td>{{ frame['frame_60_new_day']|safe }}</td>
+                    <td>{{ frame['frame_60_week']|safe }}</td>
+                    <td>{{ frame['frame_60_new_week']|safe }}</td>
+                    <td>{{ frame['frame_60_month']|safe }}</td>
+                    <td>{{ frame['frame_60_new_month']|safe }}</td>
+                </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+{% endblock %}

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="/static/favicon.ico">
+    <title>{% block title%}{% endblock %}</title>
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/base.css" rel="stylesheet">
+    <link href="/static/css/datatable/jquery.dataTables.css" rel="stylesheet">
+    {% block css %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar navbar-inverse navbar-fixed-top "style="background-color:darkslategray">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="/server/operating/">服务器Services状态监测</a>
+          <a class="navbar-brand" id="showDateTime" ></a>
+{#          <a id="showDateTime">#}
+
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="/entry/">管理后台</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <div class="container-fluid">
+      <div class="row">
+            <div class="col-sm-1 col-md-1 sidebar">
+              <ul class="nav nav-sidebar">
+                <li class="{% block operating %}{% endblock %}"><a href="/server/operating/">运营监测<span class="sr-only">(current)</span></a></li>
+                <li class="{% block manager %}{% endblock %}"><a href="/server/manager/">运维监测</a></li>
+              </ul>
+            </div>
+          <div class="col-md-11 col-sm-11 col-md-offset-1 col-sm-offset-1 main">
+            {% block main %}{% endblock %}
+          </div>
+      </div>
+    </div>
+    {% block dialog %}{% endblock%}
+    <script type="application/javascript" src="/static/js/jquery-1.12.4.js"></script>
+    <script type="application/javascript" src="/static/js/bootstrap.min.js"></script>
+    <script type="application/javascript" src="/static/js/datatable/jquery.dataTables.js"></script>
+    <script type="application/javascript" src="/static/js/datatable/dataTables.bootstrap.js"></script>
+    {% block script %}{% endblock %}
+    <script type="text/javascript" language="javascript">
+        setInterval("showDateTime.innerHTML='&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
+                    "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
+                    "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
+                    "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
+                    "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
+                    "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;当前时间:'+new Date().toLocaleString();",1000);
+    </script>
+    {% block javascipt %}{% endblock %}
+</body>
+</html>

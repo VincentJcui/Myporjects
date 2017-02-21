@@ -1,0 +1,48 @@
+{% if session.get('username',{}).get('username','') == '' %}
+    {% extends "stat/base.html" %}
+{% else %}
+    {% extends "user/base.html" %}
+{% endif %}
+{% block title %}游戏加载统计{% endblock %}
+{% block css %}{% endblock %}
+{% block req_url_7k7k %}/load/?ptname=7k7k{% endblock %}
+{% block req_url_4399 %}/load/?ptname=4399{% endblock %}
+{% block status_load %}active{% endblock %}
+{% block main %}
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped table-hover info">
+          <thead align="center" >
+            <tr class="active">
+                <td width="60">日期</td>
+                <td width="60">平台</td>
+                <td width="60">配置文件加载完成率</td>
+                <td width="60">资源文件加载完成率</td>
+                <td width="60">配置文件加载日涨跌</td>
+                <td width="60">资源文件加载日涨跌</td>
+                <td width="60">配置文件加载周涨跌</td>
+                <td width="60">资源文件加载周涨跌</td>
+                <td width="60">配置文件加载月涨跌</td>
+                <td width="60">资源文件加载月涨跌</td>
+            </tr>
+          </thead>
+          <tbody align="center">
+            {% for load in load_list %}
+                <tr>
+                    <td>{{ load['date'] }}</td>
+                    <td>{{ load['ptname'] }}</td>
+                    <td>{{ load['load_config'] }}%</td>
+                    <td>{{ load['load_res'] }}%</td>
+                    <td>{{ load['load_config_day']|safe }}</td>
+                    <td>{{ load['load_res_day']|safe }}</td>
+                    <td>{{ load['load_config_week']|safe }}</td>
+                    <td>{{ load['load_res_week']|safe }}</td>
+                    <td>{{ load['load_config_month']|safe }}</td>
+                    <td>{{ load['load_res_month']|safe }}</td>
+                </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+{% endblock %}

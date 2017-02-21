@@ -1,0 +1,62 @@
+{% if session.get('username',{}).get('username','') == '' %}
+    {% extends "stat/base.html" %}
+{% else %}
+    {% extends "user/base.html" %}
+{% endif %}
+{% block title %}进入战斗统计{% endblock %}
+{% block css %}{% endblock %}
+{% block req_url_7k7k %}/enter_game/?ptname=7k7k{% endblock %}
+{% block req_url_4399 %}/enter_game/?ptname=4399{% endblock %}
+{% block status_enter %}active{% endblock %}
+{% block main %}
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped table-hover info">
+          <thead align="center" >
+            <tr class="active">
+                <td width="40">日期</td>
+                <td width="40">平台</td>
+                <td width="40">成功率</td>
+                <td width="40">战斗资源加载率</td>
+                <td width="40">军团成功率</td>
+                <td width="40">房间成功率</td>
+                <td width="40">大厅成功率</td>
+                <td width="40">第一次进入房间成功率</td>
+                <td width="40">第一次进入大厅成功率</td>
+                <td width="40">第一次进入战斗成功率</td>
+                <td width="40">战斗内掉线率</td>
+                <td width="40">第一次战斗内掉线率</td>
+                <td width="40">天梯掉线率</td>
+                <td width="40">第一次天梯掉线率</td>
+                <td width="40">Trans踢掉率</td>
+                <td width="40">浏览器加速</td>
+                <td width="40">天梯匹配</td>
+            </tr>
+          </thead>
+          <tbody align="center">
+            {% for enter in enter_list %}
+                <tr>
+                    <td>{{ enter['date'] }}</td>
+                    <td>{{ enter['ptname'] }}</td>
+                    <td>{{ enter['success'] }}%</td>
+                    <td>{{ enter['battle_res_load'] }}%</td>
+                    <td>{{ enter['army_success'] }}%</td>
+                    <td>{{ enter['room_success'] }}%</td>
+                    <td>{{ enter['lobby_success'] }}%</td>
+                    <td>{{ enter['frist_root_success'] }}%</td>
+                    <td>{{ enter['frist_lobby_success'] }}%</td>
+                    <td>{{ enter['frist_battle_success'] }}%</td>
+                    <td>{{ enter['fighting_drop'] }}%</td>
+                    <td>{{ enter['frist_fighting_drop'] }}%</td>
+                    <td>{{ enter['ladder_drop'] }}%</td>
+                    <td>{{ enter['frist_ladder_drop'] }}%</td>
+                    <td>{{ enter['trans_drop'] }}%</td>
+                    <td>{{ enter['browser'] }}%</td>
+                    <td>{{ enter['ladder_match'] }}%</td>
+                </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+{% endblock %}

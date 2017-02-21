@@ -1,0 +1,60 @@
+{% if session.get('username',{}).get('username','') == '' %}
+    {% extends "stat/base.html" %}
+{% else %}
+    {% extends "user/base.html" %}
+{% endif %}
+{% block title %}游戏卡顿统计{% endblock %}
+{% block css %}{% endblock %}
+{% block req_url_7k7k %}/caton/?ptname=7k7k{% endblock %}
+{% block req_url_4399 %}/caton/?ptname=4399{% endblock %}
+{% block status_caton %}active{% endblock %}
+{% block main %}
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped table-hover info">
+          <thead align="center" >
+            <tr class="active">
+                <td width="60">日期</td>
+                <td width="40">平台</td>
+                <td width="40">小于5%</td>
+                <td width="40">5%-15%</td>
+                <td width="40">15%-30%</td>
+                <td width="40">30%-50%</td>
+                <td width="40">50%-70%</td>
+                <td width="40">70%-95%</td>
+                <td width="40">大于95%</td>
+                <td width="40">新手小于5%</td>
+                <td width="40">新手5%-15%</td>
+                <td width="40">新手15%-30%</td>
+                <td width="40">新手30%-50%</td>
+                <td width="40">新手50%-70%</td>
+                <td width="40">新手70%-95%</td>
+                <td width="40">新手大于95%</td>
+            </tr>
+          </thead>
+          <tbody align="center">
+            {% for caton in caton_list %}
+                <tr>
+                    <td>{{ caton['date'] }}</td>
+                    <td>{{ caton['ptname'] }}</td>
+                    <td>{{ caton['caton_5'] }}%</td>
+                    <td>{{ caton['caton_15'] }}%</td>
+                    <td>{{ caton['caton_30'] }}%</td>
+                    <td>{{ caton['caton_50'] }}%</td>
+                    <td>{{ caton['caton_70'] }}%</td>
+                    <td>{{ caton['caton_95'] }}%</td>
+                    <td>{{ caton['caton_100'] }}%</td>
+                    <td>{{ caton['caton_5_new'] }}%</td>
+                    <td>{{ caton['caton_15_new'] }}%</td>
+                    <td>{{ caton['caton_30_new'] }}%</td>
+                    <td>{{ caton['caton_50_new'] }}%</td>
+                    <td>{{ caton['caton_70_new'] }}%</td>
+                    <td>{{ caton['caton_95_new'] }}%</td>
+                    <td>{{ caton['caton_100_new'] }}%</td>
+                </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+{% endblock %}
