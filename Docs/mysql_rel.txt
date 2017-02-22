@@ -1,0 +1,25 @@
+Mysql 5.7 复制基础
+
+    - mysql的复制是基于BinLog日志
+    - 存在三种日志格式:
+        - Statement:Binlog中存储的SQL语句,存储日志量是最小的
+        - Row:存储event数据,存储日志量大,但是不能很直接的进行读取
+        - Mixed:混合格式,介于Row和Statement之间,对于不确定的使用Row记录,如果每天数据操作量很大,产生的日志比较多,可以考虑选择使用.
+    - Mysql复制可以对整个实例进行复制,也可以对实例中的某个库或某个表进行复制.
+        - Master端: --binglog-do-db
+                    --binlog-ignore-db
+        - Slave端: --replicate-do-db
+                   --replicate-ignore-db
+                   --replicate-do-table
+                   --replicate-ignore-table
+                   --replicate-wild-do-table
+                   --replicate-wild-ignore-table
+
+    - 复制类型
+        - 基于二进制日志的复制
+        - 使用GTID完成基于事物的复制
+
+    - Mysql支持半同步复制
+
+    - 多源复制
+        - 多源复制是多master复制,允许一个slave对应多个master (提高跨数据库查询效率)
