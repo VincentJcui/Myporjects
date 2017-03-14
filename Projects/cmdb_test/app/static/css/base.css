@@ -1,0 +1,35 @@
+.left {
+    float: left;
+    height: 0px;
+}
+
+.right {
+    height: 0px;
+}
+
+.nav-header.collapsed > span.glyphicon-chevron-toggle:before {
+    content: "\e114";
+}
+
+.nav-header > span.glyphicon-chevron-toggle:before {
+    content: "\e113";
+}
+
+.secondmenu a {
+    font-size: 12px;
+    color: #4A515B;
+    text-align: center;
+}
+
+.secondmenu li{
+    background-color: #eee;
+    border-color: #428bca;
+}
+
+.display-block{
+    display: block;
+}
+
+.display-none{
+    display: none;
+}
