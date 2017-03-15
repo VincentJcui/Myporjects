@@ -11,8 +11,8 @@
         </ol>
         <div>
                 <p>
-                    <input type="text" value="{{ start_date }}" id="datetimepicker" class="btn btn-default start_date">
-                    <input type="text" value="{{ end_date }}" id="datetimepicker" class="btn btn-default end_date">
+                    <input type="text" value="{{ start_date }}" id="datetimepicker1" class="btn btn-default start_date">
+                    <input type="text" value="{{ end_date }}" id="datetimepicker2" class="btn btn-default end_date">
                     <a><select id="type_select" name="type" class="btn btn-default type_select">
                             <option value="flux">按流量统计</option>
                             <option value="bandwidth">按带宽统计</option>
@@ -51,7 +51,7 @@
 {% endblock %}
 {% block js %}
     <script type="application/javascript" >
-        $("#datetimepicker").datetimepicker({
+        $("#datetimepicker1,#datetimepicker2").datetimepicker({
             bootcssVer: 3,
             language: 'zh-CN',
             format: 'yyyy-mm-dd',
