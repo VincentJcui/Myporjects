@@ -207,7 +207,7 @@ def createTable(sql):
 
 
 
-def execute_sql(sql, host='10.0.12.254', user='root', passwd='root', port=3306, db='oop', fetch=True):
+def execute_sql(sql, host='127.0.0.1', user='oop', passwd='oop', port=3306, db='oop', fetch=True):
     try:
         # 默认先尝试连接永伟的虚拟机mysql
         conn = MySQLdb.connect(host=host, user=user, passwd=passwd, port=port, db=db, charset='utf8')
