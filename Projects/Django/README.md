@@ -1,21 +1,29 @@
 安装python2.7.13
     ./configure --prefix=/usr/local/python27
+    
 安装setuptools
     /usr/local/python27/bin/python setup.py install
+    
 安装pip
     /usr/local/python27/bin/easy_install pip
+    
 安装virtualenv
     /usr/local/python27/bin/pip install virtualenv
+    
 初始化pythonenv
     /usr/local/python27/bin/virtualenv /data/python27env
     source /data/python27env/bin/activate     #进入env环境
     deactivate                                #退出env环境
+    
 安装django
     pip install "diango>=1.8,<1.9"
+    
 创建django项目
     django_admin startproject opsweb          #opsweb 为项目名字
+    
 启动django
     python manage.py runserver 0.0.0.0:5000
+    
 创建django应用app
     1.startapp
         python manage.py startapp dashboard
