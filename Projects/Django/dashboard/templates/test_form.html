@@ -5,7 +5,7 @@
     <title>Title</title>
 </head>
 <body>
-    <form action="/dashboard/test/" method="PUT">
+    <form action="/dashboard/test/" method="POST">
         <ul>
             <li><input type="text" name="username"></li>
             <li><input type="checkbox" name="fav" value="1"> linux   </li>
@@ -15,4 +15,32 @@
         </ul>
     </form>
 </body>
+
+<script>
+    
+    /*用户登陆*/
+    $('#loginform').on('submit', function () {
+        var str = $('#loginform').serialize()
+        $.post('#', str, function (res) {
+            console.log(res)
+            if(res.status == 0){
+                alert('登陆成功')
+                location.href=res.next_url
+            }else {
+                swal(
+                    {
+                        title: res.errmsg,
+                        type: "error",
+                        confirmButtonText: "知道"
+                    },function () {
+                            $('#username').val('')
+                            $('#password').val('')
+                        }
+                )
+            }
+            
+        })
+    })
+    
+</script>
 </html>

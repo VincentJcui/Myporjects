@@ -109,3 +109,23 @@ HTTP协议:
     head
     
     body
+    
+
+urls.py url函数
+参数1
+
+参数2
+
+参数3 kwargs**
+
+参数4 url名字
+
+参数5 prefix=''
+
+关键字参数   url (r^articles/(?P<year>[0-9]{4}))
+
+位置参数
+
+额外参数, 可接收一个可选的参数,必须为典
+
+反向解析, 标记一个name=''
