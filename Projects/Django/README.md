@@ -129,3 +129,15 @@ urls.py url函数
 额外参数, 可接收一个可选的参数,必须为典
 
 反向解析, 标记一个name=''
+
+分页对象:
+Paginator 
+    Paginator.count  所有页面的对象总数
+    Paginator.num_pages  页面总数
+    Paginator.page_range  页码范围
+    
+    Page对象属性
+    Page.object_list
+    Page.number      当前页的序号
+    Page.paginator   相关对象
+    
