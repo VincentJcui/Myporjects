@@ -90,3 +90,22 @@ JsonResponse对象: (注意)
     safe=False   对应解析列表
     
     
+POST请求
+    django需要注释settings的如下,否则无法请求,会报错.django特性
+    #'django.middleware.csrf.CsrfViewMiddleware'
+    用户登陆方式,建议post,ajax
+    
+QueryDict对象
+    QueryDict.get(key, default)
+    QueryDict.getlist()         结果: [u'1', u'2', u'3']
+    QueryDict.lists()           结果: [(u'username', [u'jcui']), (u'fav', [u'1', u'2', u'3'])] 列表包含元祖,元祖中是key,value的形式组成,value多个值由列表组成
+    QueryDict.dict()            结果: {u'username': u'jcui', u'fav': u'3'}  #会丢失数据
+    
+    
+    
+Vagrant配合linux虚拟机,可以在windows下直接开发,不要启动linux环境
+
+HTTP协议:
+    head
+    
+    body
