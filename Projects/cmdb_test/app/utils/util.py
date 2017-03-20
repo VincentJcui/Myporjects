@@ -18,7 +18,7 @@ def WriteLog(logger_name):
 
 
 # used for paramiko ssh
-def paramiko_command(host, cmd, username='op', password='Lieyan@1206', port=22, timeout=10):
+def paramiko_command(host, cmd, username='op', password='#########', port=22, timeout=10):
     try:
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -33,7 +33,7 @@ def paramiko_command(host, cmd, username='op', password='Lieyan@1206', port=22, 
 
 
 # used for paramiko download a file
-def paramiko_download(host, local_dir, remote_dir, filename, username='op', password='Lieyan@1206', port=22, timeout=10):
+def paramiko_download(host, local_dir, remote_dir, filename, username='op', password='#####', port=22, timeout=10):
     try:
         t = paramiko.Transport((host, port))
         t.connect(username=username, password=password)
