@@ -14,7 +14,7 @@ class Zabbixtools:
         self.url = "http://zabbix.lieyan.com.cn/api_jsonrpc.php"
         self.header = {"Content-Type": "application/json"}
         self.username = 'admin'
-        self.password = 'LADYgaga2015'
+        self.password = 'zabbix密码'
         self.authID = self.user_login()
 
     #用户登陆认证,获取authid,调用user.login 方法
