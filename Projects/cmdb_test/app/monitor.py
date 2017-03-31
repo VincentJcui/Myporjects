@@ -114,7 +114,8 @@ def update_mongo_starttime():
         time.strptime(start_time, '%H:%M')
         hour = time.strptime(start_time, '%H:%M').tm_hour
         min = time.strptime(start_time, '%H:%M').tm_min
-        cmd = "echo 'Lieyan@1206'|sudo -S sh -c" + ' "' + "echo '%s %s * * * op /home/op/mongo/mongo-admin-utils/bin/fullbackup.sh >/tmp/fullbackup.log 2>&1' > /etc/cron.d/mongo_fullback" % (min,hour) + '"'
+        cmd = "echo 'sudo密码'|sudo -S sh -c" + ' "' + "echo '%s %s * * * op /home/op/mongo/mongo-admin-utils/bin/fullbackup.sh >/tmp/fullbackup.log 2>&1' > /etc/cron.d/mongo_fullback" % (
+        min, hour) + '"'
         util.paramiko_command(request.form.get('wan_ip'), cmd)
         db.update(data, where, 'virtuals')
         data = {"code":0, 'errmsg':'备份开始时间修改成功'}
