@@ -4,7 +4,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 
 app = Flask(__name__,static_folder='static', template_folder='templates')
 
-import users, cmdb, monitor, cost, statistics, code_release
+import users, cmdb, monitor, cost, statistics, code_release, zabbix_config
 
 
 sched = BackgroundScheduler()
