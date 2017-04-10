@@ -1,3 +1,6 @@
+# vim编辑器的一些优化参数,可直接用于本地编辑
+# by 2017-04-10
+
 set tabstop=4
 set shiftwidth=4
 set softtabstop=4
