@@ -65,42 +65,60 @@ def mongo_update():
 
 def mongoback_info_auto_refresh_getip():
     ip_list = []
-    [ ip_list.append(ip['wan_ip']) for ip in db.get_list(['wan_ip'], 'virtuals') ]
+    [ip_list.append((rs['wan_ip'], rs['master_slave'])) for rs in db.get_list(['wan_ip', 'master_slave'], 'virtuals')]
     for ip in ip_list:
         mongoback_info_auto_refresh(ip)
 
 def mongoback_info_auto_refresh(ip):
-    host = ip
+    host = ip[0]
+    info = ip[1]
     back_num = 'ls /backup/mongodata/backup/full |wc -l'
     back_name = 'ls -rt /backup/mongodata/backup/full|tail -1'
     back_size = "ls -lrt --block-size=M /backup/mongodata/backup/full|tail -1|awk '{print $5}'"
     back_endtime = "ls -lrt /backup/mongodata/backup/full|tail -1|awk '{print $(NF-1)}'"
     try:
-        # 如果页面没有设置备份时间，则默认设置05:05存入数据库
-        if json.loads(db.get_one(['back_starttime'], "wan_ip='%s'" % host, 'virtuals'))['back_starttime'] is None:
-            back_startTime = '05:05'
-            data = dict({'back_startTime': back_startTime})
-            where = 'wan_ip=' + "'%s'" % host
+        if 'csbh' not in info:
+            # 如果页面没有设置备份时间，则默认设置05:05存入数据库
+            if json.loads(db.get_one(['back_starttime'], "wan_ip='%s'" % host, 'virtuals'))['back_starttime'] is None:
+                back_startTime = '05:05'
+                data = dict({'back_startTime': back_startTime})
+                where = 'wan_ip=' + "'%s'" % host
+                db.update(data, where, 'virtuals')
+            else:
+                back_startTime = json.loads(db.get_one(['back_starttime'], "wan_ip='%s'" % host, 'virtuals'))[
+                    'back_starttime']
+            back_endTime = util.paramiko_command(host, back_endtime)
+            back_startTime = datetime.datetime.strptime(back_startTime, "%M:%S")
+            if back_endTime == 1:
+                back_endTime = '00:00'
+            back_endTime = datetime.datetime.strptime(back_endTime, "%M:%S")
+            seconds = (back_endTime - back_startTime).seconds
+            hours = seconds / 60
+            second = seconds % 60
+            back_used_time = '%s小时%s分' % (hours, second)
+            referesh_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            data = dict(
+                {'back_num': util.paramiko_command(host, back_num), 'back_name': util.paramiko_command(host, back_name),
+                 'back_size': util.paramiko_command(host, back_size),
+                 'back_endtime': util.paramiko_command(host, back_endtime),
+                 'back_used_time': back_used_time, 'refresh_time': referesh_time})
+            if len(str(data['back_size'])) >= 5:
+                data['back_size'] = str(round(float(float(data['back_size'][0:-1]) / 1024), 2)) + 'G'
+            where = 'wan_ip=' + "'%s'" % (host)
             db.update(data, where, 'virtuals')
         else:
-            back_startTime = json.loads(db.get_one(['back_starttime'], "wan_ip='%s'" % host, 'virtuals'))['back_starttime']
-        back_endTime = util.paramiko_command(host, back_endtime)
-        back_startTime=datetime.datetime.strptime(back_startTime, "%M:%S")
-        if back_endTime == 1:
-            back_endTime = '00:00'
-        back_endTime = datetime.datetime.strptime(back_endTime, "%M:%S")
-        seconds = (back_endTime-back_startTime).seconds
-        hours = seconds / 60
-        second = seconds % 60
-        back_used_time = '%s小时%s分' % (hours, second)
-        referesh_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        data = dict({'back_num': util.paramiko_command(host, back_num), 'back_name': util.paramiko_command(host, back_name),
-                    'back_size': util.paramiko_command(host, back_size), 'back_endtime': util.paramiko_command(host, back_endtime),
-                     'back_used_time': back_used_time, 'refresh_time': referesh_time})
-        if len(str(data['back_size'])) >= 5:
-            data['back_size'] = str(round(float(float(data['back_size'][0:-1]) / 1024),2)) + 'G'
-        where = 'wan_ip=' + "'%s'" % (host)
-        db.update(data, where, 'virtuals')
+            referesh_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            data = {
+                'refresh_time': referesh_time,
+                'back_name': info,
+                'back_starttime': 0,
+                'back_endtime': 0,
+                'back_num': 0,
+                'back_size': 0,
+                'back_used_time': 0
+            }
+            where = 'wan_ip=' + "'%s'" % (host)
+            db.update(data, where, 'virtuals')
     except:
         traceback.print_exc()
 
@@ -114,7 +132,7 @@ def update_mongo_starttime():
         time.strptime(start_time, '%H:%M')
         hour = time.strptime(start_time, '%H:%M').tm_hour
         min = time.strptime(start_time, '%H:%M').tm_min
-        cmd = "echo 'sudo密码'|sudo -S sh -c" + ' "' + "echo '%s %s * * * op /home/op/mongo/mongo-admin-utils/bin/fullbackup.sh >/tmp/fullbackup.log 2>&1' > /etc/cron.d/mongo_fullback" % (
+        cmd = "echo 'Lieyan@1206'|sudo -S sh -c" + ' "' + "echo '%s %s * * * op /home/op/mongo/mongo-admin-utils/bin/fullbackup.sh >/tmp/fullbackup.log 2>&1' > /etc/cron.d/mongo_fullback" % (
         min, hour) + '"'
         util.paramiko_command(request.form.get('wan_ip'), cmd)
         db.update(data, where, 'virtuals')
@@ -171,4 +189,4 @@ def server_status():
     return rt_list
 
 if __name__ == '__main__':
-    mongo_monitor()
+    mongoback_info_auto_refresh_getip()

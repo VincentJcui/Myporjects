@@ -28,7 +28,7 @@
         <tbody>
            {% if servers %}
            {% for server in servers %}
-                <tr class="gradeX">
+               <tr class="gradeX" id="biao">
                         <td class="text-center">{{server.qufu}}</td>
                         <td class="text-center hostname">{{server.hostname}}</td>
                         <td class="text-center ">{{server.wan_ip}}</td>
@@ -93,10 +93,10 @@
 
 $(".request").click(function() {
     ip = $(this).attr('data-ip');
-    $.post('/mongo_update/', {'ip':ip}, function () {
-         window.location.reload()
-   });
-        return false
+    $.post('/mongo_update/', {'ip': ip}, function () {
+        window.location.reload()
+    });
+    return false
 });
 
 
@@ -167,8 +167,9 @@ $('#editable').DataTable({
 
         $(".back_name").each(function () {
             var back_name_cut = ($(this).text()).substr(0,8);
-
-            if(back_name_cut != date){
+            if (back_name_cut.indexOf("csbh") >= 0) {
+                $('.update , .request', $(this).closest('tr')).attr("disabled", true)
+            } else if (back_name_cut != date) {
                 $(this).css("color", "red")
             }
         });
