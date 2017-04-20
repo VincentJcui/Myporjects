@@ -14,7 +14,7 @@ class Zabbixtools:
         self.url = "http://zabbix.lieyan.com.cn/api_jsonrpc.php"
         self.header = {"Content-Type": "application/json"}
         self.username = 'admin'
-        self.password = 'Zabbix密码'
+        self.password = 'zabbix密码'
         self.authID = self.user_login()
 
     # 用户登陆认证,获取authid,调用user.login 方法
@@ -256,6 +256,107 @@ class Zabbixtools:
         else:
             print "Get Template Error,please check !"
 
+    def get_graphs_list(self, name):
+        data = json.dumps(
+            {
+                "jsonrpc": "2.0",
+                "method": "graph.get",
+                "params": {
+                    "filter": {"name": name},
+                },
+                "auth": self.authID,
+                "id": 1,
+            })
+        res = self.get_data(data)
+        if 'result' in res.keys():
+            res = res['result']
+        graphs_list = []
+        x = 0
+        y = 0
+        for z in res[1:]:  # 注意这里走了个捷径,为了去掉模板的图像,故用了res[1:]
+            graphs_list.append(
+                {
+                    "resourcetype": 0,
+                    "resourceid": z["graphid"],
+                    "width": 500,
+                    "height": 100,
+                    "dynamic": 1,
+                    "x": x,
+                    "y": y,
+
+                }
+            )
+            x += 1
+            if x == 2:
+                x = 0
+                y += 1
+        return graphs_list
+
+    def screen_creat(self, screen_name='', graphs_list=''):
+        get_data = json.dumps({
+            "jsonrpc": "2.0",
+            "method": "screen.get",
+            "params": {
+                "output": "extend",
+                # 过滤Screen
+                "filter": {"name": screen_name},
+            },
+            "auth": self.authID,
+            "id": 1
+        })
+        if len(graphs_list) % 2 == 1:
+            vsize = len(graphs_list) / 2 + 1
+        else:
+            vsize = len(graphs_list) / 2
+        creat_data = json.dumps({
+            "jsonrpc": "2.0",
+            "method": "screen.create",
+            "params": {
+                "name": screen_name,
+                # Screen的宽度
+                "hsize": 2,
+                # Screen的长度
+                "vsize": vsize,
+                # Screen的item信息
+                "screenitems": graphs_list,
+                "sortfield": 'resourceid',
+            },
+            "auth": self.authID,
+            "id": 1
+        })
+        res = self.get_data(get_data)
+        if res['result'] == []:
+            res = self.get_data(creat_data)
+            if 'result' in res.keys():
+                res = res['result']
+                return res
+        else:
+            screen_id = res['result'][0].get('screenid', '')
+            update_data = json.dumps({
+                "jsonrpc": "2.0",
+                "method": "screen.update",
+                "params": {
+                    # ScreenID
+                    "screenid": screen_id,
+                    # 计算Screen的行数
+                    "vsize": vsize,
+                    # Screen的item
+                    "screenitems": graphs_list,
+                },
+                "auth": self.authID,
+                "id": 1
+            })
+            res = self.get_data(update_data)
+            if 'result' in res.keys():
+                res = res['result']
+                return res
+
+
+
+
+
+
+
     def host_create(self):
         hostip = raw_input("\033[1;35;40m%s\033[0m" % 'Enter your:Host_ip :')
         groupid = raw_input("\033[1;35;40m%s\033[0m" % 'Enter your:Group_id :')
@@ -313,9 +414,15 @@ if __name__ == "__main__":
 
     # 模板获取
     # test.template_get()
-    print test.templateid_get('10224')
+    # print test.templateid_get('10224')
 
+    # 图像获取
+    graphs_list = test.get_graphs_list('iostat - util')
+    for x in graphs_list:
+        print x
 
+    # screen创建
+    test.screen_creat(screen_name='cslm_iostat_util', graphs_list=graphs_list)
 
     # 主机获取,默认只取第一个结果
     # print test.host_get('10269')
