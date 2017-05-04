@@ -168,3 +168,48 @@
 	        # MSIE 7 and newer should be able to use keepalive
 	        BrowserMatch "MSIE [17-9]" ssl-unclean-shutdown
 	</VirtualHost>
+
+   (10)2.4以上版本bug
+   
+   #Apache2.2配置如下-------------------------------------------------------------------------------------
+   #创建如下ldap的别名
+   <AuthnProviderAlias ldap ppweb>
+        AuthLDAPURL "ldap://ldap.corp.ppweb.com.cn/ou=people,dc=corp,dc=ppweb,dc=com,dc=cn?uid"
+        AuthLDAPBindDN "cn=readproxy2,dc=corp,dc=ppweb,dc=com,dc=cn"
+        AuthLDAPBindPassword "123123"
+    </AuthnProviderAlias>
+    <AuthnProviderAlias ldap xingyun>
+        AuthLDAPURL "ldap://ldap.corp.ppweb.com.cn/ou=people,ou=xingyun,ou=partner,dc=corp,dc=ppweb,dc=com,dc=cn?uid"
+        AuthLDAPBindDN "cn=readproxy2,dc=corp,dc=ppweb,dc=com,dc=cn"
+        AuthLDAPBindPassword "123123"
+    </AuthnProviderAlias>
+    
+   #如下配置中引用别名,在启动apache2的过程中不会报错,但是却无法访问ldap获取用户信息.这是apache2.4的bug
+   <Location /repos/project>
+        DAV svn
+        SVNPath /opt/svn/repos/project
+        AuthType Basic
+        AuthName "Login"
+        Require valid-user
+        AuthBasicProvider ppweb xinyun
+        AuthzSVNAccessFile /opt/svn/repos/project/conf/authz
+    </Location>
+    
+    #Apache2.4配置如下-------------------------------------------------------------------------------------
+    #不创建别名文件,直接配置ldap的信息到文件中,如果有多个location,即需要每个location中都配置ldap信息
+    <Location /repos/project>
+	DAV svn
+	SVNPath /opt/svn/repos/project
+	AuthType Basic
+	AuthName "Login"
+	Require valid-user
+    AuthBasicProvider ldap
+    ###LDAP连接,2.4的版本存在bug,导致alias无法使用,无法查找到ldap的信息,故又添加到这里
+    AuthLDAPURL "ldap://ldap.corp.ppweb.com.cn/ou=people,dc=corp,dc=ppweb,dc=com,dc=cn?uid"
+    ###邦定用户
+    AuthLDAPBindDN "cn=readproxy2,dc=corp,dc=ppweb,dc=com,dc=cn"
+    ###邦定密码
+    AuthLDAPBindPassword "123123"
+	AuthzSVNAccessFile /opt/svn/repos/project/conf/authz
+    </Location>
+   
