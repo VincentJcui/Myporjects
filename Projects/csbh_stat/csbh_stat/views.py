@@ -23,7 +23,7 @@ sys.setdefaultencoding('utf8')
 '''
 @app.route('/')
 def index():
-    return redirect('/enter_game/')
+    return redirect('/server/manager/')
 
 '''
 加载进入游戏统计页面
@@ -237,16 +237,20 @@ def logout():
 '''
 @app.route('/server/manager/',methods=['POST','GET'])
 def server_manager():
-    server_list = server_status()
-    return render_template('info/manager.html',server_list=server_list)
+    current_page = request.args.get('page', 1)
+    server_list, page_list = server_status('/server/manager/', current_page, 12)
+    return render_template('info/manager.html', server_list=server_list, page_list=page_list)
 
 '''
 服务状态监测,运营使用
 '''
 @app.route('/server/operating/',methods=['POST','GET'])
 def server_operating():
-    server_list = server_status()
-    return render_template('info/operating.html',server_list=server_list)
+    current_page = request.args.get('page', 1)
+    # server_status(参数1, 参数2)
+    # 参数1代表打开第几页,参数2代表每页显示的条数
+    server_list, page_list = server_status('/server/operating/', current_page, 20)
+    return render_template('info/operating.html', server_list=server_list, page_list=page_list)
 
 '''
 IDC1

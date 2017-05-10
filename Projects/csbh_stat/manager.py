@@ -36,5 +36,33 @@ CREATE TABLE `idc_data` (
   `status` varchar(256) DEFAULT NULL,
   `info` varchar(256) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=59 DEFAULT CHARSET=utf8
+) ENGINE=InnoDB AUTO_INCREMENT=59 DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `info` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `name` varchar(48) NOT NULL COMMENT '平台',
+  `server` varchar(48) NOT NULL COMMENT '服务器',
+  `batt_t` varchar(48) NOT NULL COMMENT 'Battle更新时间',
+  `match_t` varchar(48) NOT NULL COMMENT 'Match更新时间',
+  `enro_t` varchar(48) NOT NULL COMMENT 'Enroll更新时间',
+  `pvr_t` varchar(48) NOT NULL COMMENT 'PVR更新时间',
+  `tran_t` varchar(48) NOT NULL COMMENT 'transe更新时间',
+  `ext_t` varchar(48) NOT NULL COMMENT 'Ext更新时间',
+  `war_t` varchar(48) NOT NULL COMMENT 'War更新时间',
+  `conf_t` varchar(48) NOT NULL COMMENT 'Config更新时间',
+  `start_batt` varchar(48) NOT NULL COMMENT 'Battle启动时间',
+  `start_match` varchar(48) NOT NULL COMMENT 'Match启动时间',
+  `start_enro` varchar(48) NOT NULL COMMENT 'Enroll启动时间',
+  `start_pvr` varchar(48) NOT NULL COMMENT 'PVR启动时间',
+  `start_state` varchar(48) NOT NULL COMMENT 'StateServer启动时间',
+  `start_trans` varchar(48) NOT NULL COMMENT 'transe启动时间',
+  `match_v` varchar(48) NOT NULL COMMENT 'Match版本号',
+  `batt_v` varchar(48) NOT NULL COMMENT 'Battle版本号',
+  `pvr_v` varchar(48) NOT NULL COMMENT 'PVR版本号',
+  `state_v` varchar(48) NOT NULL COMMENT 'StateServer版本号',
+  `trans_v` varchar(48) NOT NULL COMMENT 'transe版本号',
+  `billingid` varchar(10) NOT NULL COMMENT '充值ID(ServerID)',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=utf8 COMMENT='运维监测'
 '''
