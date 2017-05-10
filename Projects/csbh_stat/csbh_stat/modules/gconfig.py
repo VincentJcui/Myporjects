@@ -6,7 +6,7 @@
 mysql_host = 'localhost'
 mysql_port = 3306
 mysql_user = 'root'
-mysql_passwd = '6522123'
+mysql_passwd = 'root'
 mysql_db = 'csbh_stat'
 mysql_charset = 'utf8'
 
