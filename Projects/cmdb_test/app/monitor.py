@@ -9,6 +9,7 @@ import datetime, time
 import json
 import traceback
 from tasks import celery
+from utils import pager
 
 
 @app.route('/mongo_monitor/')
@@ -132,7 +133,7 @@ def update_mongo_starttime():
         time.strptime(start_time, '%H:%M')
         hour = time.strptime(start_time, '%H:%M').tm_hour
         min = time.strptime(start_time, '%H:%M').tm_min
-        cmd = "echo '用户密码'|sudo -S sh -c" + ' "' + "echo '%s %s * * * op /home/op/mongo/mongo-admin-utils/bin/fullbackup.sh >/tmp/fullbackup.log 2>&1' > /etc/cron.d/mongo_fullback" % (
+        cmd = "echo 'ssh密码'|sudo -S sh -c" + ' "' + "echo '%s %s * * * op /home/op/mongo/mongo-admin-utils/bin/fullbackup.sh >/tmp/fullbackup.log 2>&1' > /etc/cron.d/mongo_fullback" % (
         min, hour) + '"'
         util.paramiko_command(request.form.get('wan_ip'), cmd)
         db.update(data, where, 'virtuals')
@@ -142,16 +143,20 @@ def update_mongo_starttime():
     return json.dumps(data)
 
 
-@app.route('/operating/')
+@app.route('/operating/', methods=['POST', 'GET'])
 @login_required
 def operating():
-    return render_template('monitor/operating.html', server_list = server_status())
+    current_page = request.args.get('page', 1)
+    server_list, page_list = server_status('/operating/', current_page, 19)
+    return render_template('monitor/operating.html', server_list=server_list, page_list=page_list)
 
 
-@app.route('/manager/')
+@app.route('/manager/', methods=['POST', 'GET'])
 @login_required
 def manager():
-    return render_template('monitor/manager.html', server_list = server_status())
+    current_page = request.args.get('page', 1)
+    server_list, page_list = server_status('/manager/', current_page, 12)
+    return render_template('monitor/manager.html', server_list=server_list, page_list=page_list)
 
 
 @app.route('/backupServer_monitor/')
@@ -182,11 +187,17 @@ def backupServer_monitor_cron():
             db.create(ip, 'backupServerMonitor')
 
 
-def server_status():
+def server_status(base_url, current_page, avg_page):
     collections = ('id','name','server','batt_t','match_t','enro_t','pvr_t','tran_t','ext_t','war_t','conf_t','start_batt','start_match',
                    'start_enro','start_pvr','start_state','start_trans','match_v','batt_v','pvr_v','state_v','trans_v','billingid')
     rt_list = db.get_list(collections, 'op_vertion')
-    return rt_list
+    # 初始化Pager类
+    page = pager.Pager(current_page, avg_page)
+    # 获取首页显示的内容
+    server_list = rt_list[page.start_page:page.end_page]
+    # 获取分页的页数
+    page_list = page.page_str(len(rt_list), base_url)
+    return server_list, page_list
 
 if __name__ == '__main__':
     mongoback_info_auto_refresh_getip()
