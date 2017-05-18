@@ -37,7 +37,7 @@ class Pager(object):
                 end = self.current_page + 6
                 if self.current_page + 6 > all_page:
                     start = all_page - 10
-                    end = all_page + 1
+                    end = all_page
         for i in range(start, end):
             # 判断是否为当前页
             if i == self.current_page:
