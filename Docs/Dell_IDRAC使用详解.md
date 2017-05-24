@@ -42,6 +42,62 @@ racadm config -g cfgServerInfo -o cfgServerBootOnce 1
 racadm config -g cfgServerInfo -o cfgServerFirstBootDevice PXE
 racadm serveraction powercycle
 
+硬件资源：
+    获取内存大小： racadm get BIOS.memSettings.SysMemSize
+    获取内存工作速率： racadm get BIOS.MemSettings.SysMemSpeed
+    获取内存类型： racadm get BIOS.MemSettings.SysMemType
+
+BIOS相关：
+    错误提示状态：racadm get BIOS.MiscSettings.ErrPrompt
+    关闭错误提示： racadm set BIOS.MiscSettings.ErrPrompt Disabled
+    BIOS启动模式： racadm get BIOS.BiosBootSettings.BootMode（默认BIOS,另有UEFI）
+    系统启动顺序： racadm get BIOS.BiosBootSettings.BootSeq
+    更改系统启动顺序：racadm set BIOS.BiosBootSettings.BootSeq NIC.Integrated.1-1-1,HardDisk.List.1-1,Optical.SATAEmbedded.E-1
+    提交BIOS objects job：jobqueue create BIOS.Setup.1-1
+    获取sn： racadm get BIOS.SysInformation.SystemServiceTag
+    获取型号： racadm get BIOS.SysInformation. SystemModelName
+    获取bios版本： racadm get BIOS.SysInformation. SystemBiosVersion
+
+网卡相关：
+    获取网卡mac： racadm getsysinfo -s ( racadm nicstatistics | racadm racdump )
+    获取网卡3是否开启pxe：racadm get nic.NICConfig.3.LegacyBootProto
+    启用网卡pxe： racadm set nic.NICConfig.3.LegacyBootProto PXE
+    PXE配置应用生效： racadm jobqueue create NIC.Integrated.1-3-1
+    提交NIC objects job：racadm jobqueue create NIC.Integrated.1-1 -r pwrcycle -s TIME_NOW -e 20120501100000
+
+磁盘相关：
+    获取物理磁盘： racadm storage get pdisks
+    获取虚拟磁盘信息： storage get vdisks -o ［ -p status,size,layout,state ］
+
+raid相关：
+    获取raid控制器： racadm storage get controllers
+    获取raid控制器属性name、status： racadm storage get controllers -o -p name,status
+    删除所有raid： racadm storage resetconfig:RAID.Integrated.1-1
+    提交storage作业： racadm jobqueue create RAID.Integrated.1-1 -s TIME_NOW -r none （ forced | pwrcycle | graceful） ［ -—realtime ］
+    创建raid5，分配300G做系统： racadm storage createvd:RAID.Integrated.1-1 -rl r5 -size 300g -pdkey:Disk.Bay.0:Enclosure.Internal.0-1:RAID.Integrated.1-1,Disk.Bay.1:Enclosure.Internal.0-1:RAID.Integrated.1-1,Disk.Bay.2:Enclosure.Internal.0-1:RAID.Integrated.1-1
+    创建raid5： racadm storage createvd:RAID.Integrated.1-1 -rl r5 -pdkey:Disk.Bay.0:Enclosure.Internal.0-1:RAID.Integrated.1-1,Disk.Bay.1:Enclosure.Internal.0-1:RAID.Integrated.1-1,Disk.Bay.2:Enclosure.Internal.0-1:RAID.Integrated.1-1
+
+用户相关：
+    注：数字2、15为用户ID。
+    查看用户信息：racadm get idrac.users.2
+    添加用户：racadm set idrac.users.15.username chenss
+    设置密码：racadm set idrac.users.15.password wuyancs
+    设置为idrac管理员：racadm set idrac.users.15.Privilege 0x1ff
+    启用用户：racadm set idrac.users.15.enable enabled
+
+IP相关：
+    获取idrac ip info： racadm get iDRAC.IPv4[ Address | Static | Gateway ]
+
+日志相关：
+    获取前置面板LCD显示信息：racadm get System.LCD.CurrentDisplay
+
+系统相关：
+    开机： racadm serveraction powerup
+    关机： racadm serveraction powerdown
+    重启： racadm serveraction powercycle
+    状态： racadm serveraction powerstatus
+    获取idrac snap info：racadm get iDRAC.SNMP
+
 其他常用
 # racadm racresetcfg       重设idrac卡
 # racadm serveraction [powerdown|powerup|powercycle]    开机,关机,重启
