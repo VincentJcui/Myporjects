@@ -130,6 +130,7 @@ $("#updatebtn").on('click',function(){
 $('#editable').DataTable({
     "bDestroy": true,
     "iDisplayLength": 17,
+    "ordering" :false ,  <!--这里关闭了排序,故下面的order排序方法不生效 -->
     "language": {
         "lengthMenu": "每页 _MENU_ 条记录",
         "zeroRecords": "没有找到记录",

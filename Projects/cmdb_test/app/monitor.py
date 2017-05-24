@@ -23,7 +23,13 @@ def mongo_monitor():
         for server in servers:
             if server['server_id'] == (hostname['id']):
                 server['server_id'] = hostname['hostname']
-    return render_template('monitor/mongo_monitor.html', servers=servers)
+    new_server = []
+    for x in servers:
+        if x['back_num'] != 0:
+            new_server.insert(0, x)
+        else:
+            new_server.append(x)
+    return render_template('monitor/mongo_monitor.html', servers=new_server)
 
 @app.route('/mongo_update/', methods=['POST'])
 @login_required
@@ -163,7 +169,13 @@ def manager():
 @login_required
 def backupServer_monitor():
     ip_list = db.get_list(['qufu','hostname','wan_ip','backNum','backName','backSize'], 'backupServerMonitor')
-    return render_template('monitor/backupServer_monitor.html', infos=ip_list)
+    newlist = []
+    for x in ip_list:
+        if x['backSize'] != '1M':
+            newlist.insert(0, x)
+        else:
+            newlist.append(x)
+    return render_template('monitor/backupServer_monitor.html', infos=newlist)
 
 
 def backupServer_monitor_cron():
