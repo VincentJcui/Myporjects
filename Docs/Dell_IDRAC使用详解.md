@@ -99,20 +99,20 @@ IP相关：
     获取idrac snap info：racadm get iDRAC.SNMP
 
 其他常用
-# racadm racresetcfg       重设idrac卡
-# racadm serveraction [powerdown|powerup|powercycle]    开机,关机,重启
-# racadm getsel            查看event log
-# racadm clear             清除event log
-# racadm getniccfg         获取远程的IP信息
-# racadm getconfig -g cfgLanNetworking   获取远程idrac卡的的IP信息
-# racadm config -g cfgLanNetworking -o cfgNicEnable 1                       开启网卡
-# racadm config -g cfgLanNetworking -o cfgNicIpAddress 192.168.1.2          设置IP地址
-# racadm config -g cfgLanNetworking -o cfgNicNetmask 255.255.255.0          设置子网掩码
-# racadm config -g cfgLanNetworking -o cfgNicGateway 192.168.1.1            设置网关地址
-# racadm config -g cfgLanNetworking -o cfgNicUseDhcp 0                      是否使用dhcp
+    racadm racresetcfg       重设idrac卡
+    racadm serveraction [powerdown|powerup|powercycle]    开机,关机,重启
+    racadm getsel            查看event log
+    racadm clear             清除event log
+    racadm getniccfg         获取远程的IP信息
+    racadm getconfig -g cfgLanNetworking   获取远程idrac卡的的IP信息
+    racadm config -g cfgLanNetworking -o cfgNicEnable 1                       开启网卡
+    racadm config -g cfgLanNetworking -o cfgNicIpAddress 192.168.1.2          设置IP地址
+    racadm config -g cfgLanNetworking -o cfgNicNetmask 255.255.255.0          设置子网掩码
+    racadm config -g cfgLanNetworking -o cfgNicGateway 192.168.1.1            设置网关地址
+    racadm config -g cfgLanNetworking -o cfgNicUseDhcp 0                      是否使用dhcp
 
 
-#具体要查找哪项内容,可以时间将rac.cfg导出,针对里面的内容作相应的修改即可
+具体要查找哪项内容,可以时间将rac.cfg导出,针对里面的内容作相应的修改即可
 
 
 ipmitool命令:
