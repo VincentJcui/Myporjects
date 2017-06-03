@@ -33,4 +33,13 @@ go语言的应用：
     gofmt -w hello.go   自动缩进
     goimports -w hello.go  自动引入包
 
+一些常用命令
+    go build
+    go test
+    go get
+    godoc -http=:9000
+
+go中的指针
+
+
 
