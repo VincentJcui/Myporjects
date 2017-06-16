@@ -71,4 +71,5 @@ sudo apt-get install libssl-dev
     sudo apt-get install rabbitmq-server
 
 # code_release.py
+    sudo apt-get install subversion
     sudo apt-get install python-svn
