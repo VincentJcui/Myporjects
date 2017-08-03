@@ -18,7 +18,7 @@ def WriteLog(logger_name):
 
 
 # used for paramiko ssh
-def paramiko_command(host, cmd, username='op', password='#########', port=22, timeout=10):
+def paramiko_command(host, cmd, username='ssh用户名', password='ssh密码', port=22, timeout=10):
     try:
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -33,7 +33,7 @@ def paramiko_command(host, cmd, username='op', password='#########', port=22, ti
 
 
 # used for paramiko download a file
-def paramiko_download(host, local_dir, remote_dir, filename, username='op', password='#####', port=22, timeout=10):
+def paramiko_download(host, local_dir, remote_dir, filename, username='ssh用户名', password='ssh密码', port=22, timeout=10):
     try:
         t = paramiko.Transport((host, port))
         t.connect(username=username, password=password)
@@ -57,6 +57,19 @@ def write_csv(headers, rows): # rows = [ [], [], [] ]
     cxt = s.getvalue()
     s.close()
     return cxt
+
+#定义一个树形结构,用于控制每个页面的访问时树形结构的保持
+class Display(object):
+    def __init__(self):
+        self.display = {
+            "user":"none",
+            "code":"none",
+            "assets":"none",
+            "monitor":"none",
+            "idc":"none",
+            "statics":"none",
+            }
+
 
 
 if __name__ == '__main__':

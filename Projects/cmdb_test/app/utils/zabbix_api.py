@@ -3,6 +3,7 @@
 import json
 import urllib2
 import sys
+import re
 from StringIO import StringIO
 
 import re
@@ -46,7 +47,7 @@ class Zabbixtools:
             response = json.loads(result.read())
             result.close()
             authID = response['result']
-            print "Auth Successful, AuthID: %s" % authID
+            # print "Auth Successful, AuthID: %s" % authID
             return authID
 
     # 获取数据的方法
@@ -110,6 +111,9 @@ class Zabbixtools:
                 result = x
         return result
 
+
+
+
     # 获取host信息,调用host.get 方法
     def host_get(self, host=""):
         # hostip = raw_input("\033[1;35;40m%s\033[0m" % 'Enter Your Check Host:Host_ip :')
@@ -130,18 +134,20 @@ class Zabbixtools:
         #     print "%s : %s" % (x,y)
         if (res != 0) and (len(res) != 0):
             # for host in res:
+            if host == "":
+                return res
             host = res[0]
             return host  # 直接返回hots信息
             if host['status'] == '1':
                 # print "\t","\033[1;31;40m%s\033[0m" % "Host_IP:","\033[1;31;40m%s\033[0m" %host['host'].ljust(15),'\t',"\033[1;31;40m%s\033[0m" % "Host_Name:","\033[1;31;40m%s\033[0m"% host['name'].encode('UTF-8'),'\t',"\033[1;31;40m%s\033[0m" % u'未在监控状态'.encode('UTF-8')
                 print "HostID:%s , name:%s , host:%s , status:%s, interface:" % (
-                    host['hostid'], host['name'], host['host'], host['status'])
+                host['hostid'], host['name'], host['host'], host['status'])
                 return host
             elif host['status'] == '0':
                 # print "\t","\033[1;32;40m%s\033[0m" % "Host_IP:","\033[1;32;40m%s\033[0m" %host['host'].ljust(15),'\t',"\033[1;32;40m%s\033[0m" % "Host_Name:","\033[1;32;40m%s\033[0m"% host['name'].encode('UTF-8'),'\t',"\033[1;32;40m%s\033[0m" % u'在监控状态'.encode('UTF-8')
                 print "HostID:%s , name:%s , host:%s , status:%s, interface:%s" % (
-                    host['hostid'], host['name'], host['host'], host['status'],
-                    self.hostinterface_get(host['hostid'])['ip'])
+                host['hostid'], host['name'], host['host'], host['status'],
+                self.hostinterface_get(host['hostid'])['ip'])
                 return host
             print
         else:
@@ -256,28 +262,60 @@ class Zabbixtools:
         else:
             print "Get Template Error,please check !"
 
-    def get_graphs_list(self, name):
+    def get_grapgs(self,hostid,name):
         data = json.dumps(
             {
                 "jsonrpc": "2.0",
                 "method": "graph.get",
                 "params": {
-                    "filter": {"name": name},
+                    'selectGraphs': ['graphid',"name"],
+                    "filter": {"hostid":hostid,"name":name},
                 },
                 "auth": self.authID,
                 "id": 1,
             })
-        res = self.get_data(data)
-        if 'result' in res.keys():
-            res = res['result']
+        res = self.get_data(data)['result']
+        # print res
+        return res[0].get('graphid')
+        pass
+
+    def get_graphs_list(self, name, hostid_list, columns):
+        # print name
+        # print hostid
+        # print columns
+        graphs = []
+        for hostid in hostid_list:
+            data = json.dumps(
+                {
+                    "jsonrpc": "2.0",
+                    "method": "graph.get",
+                    "params": {
+                        'selectGraphs':['graphid'],
+                        # 'select':[name,'name'],
+                        'output':"extend",
+                        "hostids":hostid['hostid'],
+                        "filter": {'name': name},
+                        "sortfield": 'name',
+
+                    },
+                    "auth": self.authID,
+                    "id": 1,
+                })
+            res = self.get_data(data)
+            if 'result' in res.keys():
+                res = res['result']
+            for i in res:
+                graphs.append(i['graphid'])
         graphs_list = []
         x = 0
         y = 0
-        for z in res[1:]:  # 注意这里走了个捷径,为了去掉模板的图像,故用了res[1:]
+        for z in graphs:  # 注意这里走了个捷径,为了去掉模板的图像,故用了res[1:]
+            # print z
+            # print '================'
             graphs_list.append(
                 {
                     "resourcetype": 0,
-                    "resourceid": z["graphid"],
+                    "resourceid": z,
                     "width": 500,
                     "height": 100,
                     "dynamic": 1,
@@ -287,7 +325,7 @@ class Zabbixtools:
                 }
             )
             x += 1
-            if x == 2:
+            if x == int(columns):
                 x = 0
                 y += 1
         return graphs_list
@@ -304,10 +342,10 @@ class Zabbixtools:
             "auth": self.authID,
             "id": 1
         })
-        if len(graphs_list) % 2 == 1:
-            vsize = len(graphs_list) / 2 + 1
+        if len(graphs_list) % 3 == 0:
+            vsize = len(graphs_list) / 3 + 1
         else:
-            vsize = len(graphs_list) / 2
+            vsize = len(graphs_list) / 3
         creat_data = json.dumps({
             "jsonrpc": "2.0",
             "method": "screen.create",
@@ -416,16 +454,44 @@ if __name__ == "__main__":
     # test.template_get()
     # print test.templateid_get('10224')
 
+    # 主机获取,如果指定hostid,则只获取当前指定id的信息,如未指定,则获取全部host信息
+    print test.host_get('10161')
+
+    # 获取批量服务器的host
+    all_host = test.host_get()
+    pattern = re.compile(r'fps[0-9]*.gd')  # 正则匹配广东
+    hostid_list = []
+
+    #all_host需要排序
+    for i in all_host:
+        if pattern.findall(i.get('name')):
+            hostid_list.append(i)
+    sort_host_list = sorted(hostid_list, key=lambda t:int(t['name'].split('.')[0].split('fps')[1]))
+
     # 图像获取
-    graphs_list = test.get_graphs_list('iostat - util')
-    for x in graphs_list:
-        print x
+    #创建csbh_status的Screen
+    graphs_list = test.get_graphs_list( 'CPU_apps', sort_host_list, 3)
+    test.screen_creat(screen_name='csbh_status', graphs_list=graphs_list)
+
+    #创建csbh_cpu的Screen
+    graphs_list = test.get_graphs_list('cpu', sort_host_list, 3)
+    test.screen_creat(screen_name='csbh_cpu', graphs_list=graphs_list)
+
+    #创建csbh_load的Screen
+    graphs_list = test.get_graphs_list('Cpu_load', sort_host_list, 3)
+    test.screen_creat(screen_name='csbh_load', graphs_list=graphs_list)
+
+    # 创建csbh_disk的Screen
+    graphs_list = test.get_graphs_list('Disk_use_/', sort_host_list, 3)
+    test.screen_creat(screen_name='csbh_disk', graphs_list=graphs_list)
+
+    #创建csbh_online的Screen
+    graphs_list = test.get_graphs_list('onlineplayer', sort_host_list, 3)
+    test.screen_creat(screen_name='csbh_online', graphs_list=graphs_list)
 
     # screen创建
-    test.screen_creat(screen_name='cslm_iostat_util', graphs_list=graphs_list)
+    # test.screen_creat(screen_name='csbh_load', graphs_list=graphs_list)
 
-    # 主机获取,默认只取第一个结果
-    # print test.host_get('10269')
 
     # 主机网络信息获取
     # print test.hostinterface_get('10190')

@@ -38,7 +38,8 @@ class Pager(object):
                 if self.current_page + 6 > all_page:
                     start = all_page - 10
                     end = all_page
-        for i in range(start, end):
+
+        for i in range(start, end+1):
             # 判断是否为当前页
             if i == self.current_page:
                 # page_temp = '<a style="color:red;font-size:16px;padding: 5px" href="%s?page=%d">%d</a>' % (base_url,i,i)
@@ -59,7 +60,6 @@ class Pager(object):
             next_page = '<li class="disabled"> <a href="javascript:void(0);">下一页</a> </li>'
         else:
             next_page = '<li> <a href="%s?page=%d">下一页</a> </li>' % (base_url, self.current_page + 1)
-
         page_list.insert(0, up_page)
         page_list.append(next_page)
 
