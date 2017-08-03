@@ -79,6 +79,11 @@
             {% endfor %}
           </tbody>
         </table>
+        <nav aria-label="Page navigation">
+            <ul class="pagination pagination-sm">
+                {{ page_list |safe }}
+            </ul>
+        </nav>
       </div>
 
 {% endblock %}
@@ -95,25 +100,25 @@
         $('#sel_type option[value=' + {{ type_sel }} + ']').attr("selected", true);
     });
 
-    $('#editable').DataTable({
-        "bDestroy": true,
-        "iDisplayLength": 17,
-        "language": {
-            "lengthMenu": "每页 _MENU_ 条记录",
-            "zeroRecords": "没有找到记录",
-            "sInfo": "第 _PAGE_ 页 ( 总共 _PAGES_ 页 ),显示第 _START_ 至 _END_ 项(总共 _TOTAL_ 项)",
-            "infoEmpty": "无记录",
-            "infoFiltered": "(从 _MAX_ 条记录过滤)",
-            "sSearch": "搜索:",
-            "oPaginate": {
-            "sFirst": "首页",
-            "sPrevious": "上一页",
-            "sNext": "下一页",
-            "sLast": "末页"
-            }
-        },
-        "order": [[ 0,"desc" ]]
-    });
+    {#    $('#editable').DataTable({#}
+    {#        "bDestroy": true,#}
+    {#        "iDisplayLength": 17,#}
+    {#        "language": {#}
+    {#            "lengthMenu": "每页 _MENU_ 条记录",#}
+    {#            "zeroRecords": "没有找到记录",#}
+    {#            "sInfo": "第 _PAGE_ 页 ( 总共 _PAGES_ 页 ),显示第 _START_ 至 _END_ 项(总共 _TOTAL_ 项)",#}
+    {#            "infoEmpty": "无记录",#}
+    {#            "infoFiltered": "(从 _MAX_ 条记录过滤)",#}
+    {#            "sSearch": "搜索:",#}
+    {#            "oPaginate": {#}
+    {#            "sFirst": "首页",#}
+    {#            "sPrevious": "上一页",#}
+    {#            "sNext": "下一页",#}
+    {#            "sLast": "末页"#}
+    {#            }#}
+    {#        },#}
+    {#        "order": [[ 0,"desc" ]]#}
+    {#    });#}
 
     $(".search").click(function () {
         var platformid = $("#platform").val();

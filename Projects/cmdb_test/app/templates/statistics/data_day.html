@@ -21,6 +21,7 @@
                   <option value=27>迅雷</option>
                   <option value=22>酷狗</option>
                   <option value=9>风云</option>
+                  <option value=30>飞火</option>
             </select>
              &nbsp;<button type="submit" class="btn btn-success history">历史查询</button>
             <!--导出excel只能用a标签??? 用ajax get的方法点击按钮后不能生成excel文件-->
@@ -45,6 +46,8 @@
             <th width="80" class="text-center">登录用户付费转化率</th>
             <th width="80" class="text-center">新增注册用户付费转化率</th>
             <th style="vertical-align: middle" class="text-center">充值金额</th>
+            <th style="vertical-align: middle" class="text-center">平台充值</th>
+            <th style="vertical-align: middle" class="text-center">官网充值</th>
             <th width="80" style="vertical-align: middle" class="text-center">新增付费用户数</th>
         </tr>
     </thead>
@@ -67,6 +70,8 @@
                     <td class="text-center">{{data.login_user_pay_trans_rate}}</td>
                     <td class="text-center">{{data.new_reg_user_pay_transe_rate}}</td>
                     <td class="text-center">{{data.pay_money}}</td>
+                    <td class="text-center">{{data.pay_m_pt}}</td>
+                    <td class="text-center">{{data.pay_m_gw}}</td>
                     <td class="text-center">{{data.new_pay_user_num}}</td>
              </tr>
         {% endfor %}

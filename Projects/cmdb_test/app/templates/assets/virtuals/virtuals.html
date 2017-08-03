@@ -13,27 +13,29 @@
                 <a href="/virtualadd/" class='btn btn-sm btn-primary'>添加虚拟服务器</a>
             </p>
         {% endif %}
-        <table class="table table-striped table-bordered table-hover " id="editable">
+        <table class="table table-striped table-bordered table-responsive table-hover" id="editable">
         <thead>
             <tr>
-                <th class="text-center">区服</th>
-                <th class="text-center">平台ID</th>
-                <th class="text-center">ServerID</th>
-                <th class="text-center">主机名</th>
-                <th class="text-center">内网IP</th>
-                <th class="text-center">外网IP</th>
-                <th class="text-center">cpu</th>
-                <th class="text-center">内存</th>
-                <th class="text-center">硬盘</th>
-                <th class="text-center">mongo主从关系</th>
-                <th class="text-center">宿主机</th>
-                <th class="text-center">操作</th>
+                <th hidden="hidden">序号</th>
+                <th class="text-center" style="width: 10%">区服</th>
+                <th class="text-center" style="width: 5%">平台ID</th>
+                <th class="text-center" style="width: 5%">ServerID</th>
+                <th class="text-center" style="width: 10%">主机名</th>
+                <th class="text-center" style="width: 10%">内网IP</th>
+                <th class="text-center" style="width: 10%">外网IP</th>
+                <th class="text-center" style="width: 5%">cpu</th>
+                <th class="text-center" style="width: 5%">内存</th>
+                <th class="text-center" style="width: 5%">硬盘</th>
+                <th class="text-center" style="width: 15%">mongo主从关系</th>
+                <th class="text-center" style="width: 10%">宿主机</th>
+                <th class="text-center" style="width: 10%">操作</th>
             </tr>
         </thead>
         <tbody>
            {% if virtuals %}
            {% for virtual in virtuals %}
                 <tr class="gradeX">
+                        <td hidden="hidden" id="index_loop" name="index_loop"></td>
                         <td class="text-center">{{virtual.qufu}}</td>
                         <td class="text-center">{{virtual.platform}}</td>
                         <td class="text-center">{{virtual.serverid}}</td>
@@ -46,10 +48,25 @@
                         <td class="text-center">{{virtual.master_slave}}</td>
                         <td class="text-center">{{virtual.server_id}}</td>
                         <td class="text-center">
+                            <span class="btn-group {% if loop.index0%15/10 > 1 or loop.index0 > 50 %} dropup {% else %} dropdown {% endif  %}">
+                                <button type="button" class="dropdown-toggle btn btn-xs btn-info" id="looklist" data-toggle="dropdown" >查看<span class="caret"></span></button>
+                                <ul class="dropdown-menu" role="menu">
+                                        <li><a><i class="fa fa-area-chart look_cpu"  data-id="{{ virtual.id }}" data-qufu="{{ virtual.qufu }}"> CPU</i></a></li>
+                                        <li class="divider"></li>
+                                        <li><a><i class="fa fa-area-chart look_load" data-id="{{ virtual.id }}" data-qufu="{{ virtual.qufu }}"> Load</i></a></li>
+                                        <li class="divider"></li>
+                                        <li><a><i class="fa fa-area-chart look_online"  data-id="{{ virtual.id }}" data-qufu="{{ virtual.qufu }}"> Online</i> </a></li>
+                                        <li class="divider"></li>
+                                        <li><a><i class="fa fa-area-chart look_apps"  data-id="{{ virtual.id }}" data-qufu="{{ virtual.qufu }}"> Apps_cpu</i> </a></li>
+                                </ul>
+                            </span>
+
+                            &nbsp;
                             {% if session.role == "admin" %}
-                            <button data-id="{{virtual.id}}" class="btn btn-xs btn-info update">编辑</button>
-                            <button data-id="{{virtual.id}}" class="btn btn-xs btn-danger del">删除</button>
+                                <button data-id="{{virtual.id}}" class="btn btn-xs btn-info update">更新 </button>&nbsp;
+                                <button data-id="{{virtual.id}}" class="btn btn-xs btn-danger del">删除 </button>
                             {% endif %}
+
                         </td>
                  </tr>
             {% endfor %}
@@ -57,7 +74,27 @@
         </tbody>
         </table>
 
-
+        <!--下拉菜单模态框-->
+        <div class="modal fade" id='look_info'>
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <!--模态框标题-->
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        <span><h4 class="modal-title" id="looklist_name"></h4></span>
+                    </div>
+                    <!--模态框内容-->
+                    <div class="modal-body" id="grpahs">
+                    <!-- 内容由js填充 -->
+                    </div>
+                    <!--模态框footer-->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--更新模态框-->
         <div class="modal fade" id='updateModel'>
           <div class="modal-dialog">
             <div class="modal-content">
@@ -164,6 +201,74 @@
 {% block script %}
 <script>
 //$('#updateForm').Validform({tiptype:3});
+/*
+*/
+
+//CPU
+$('.look_cpu').click(function(){
+  // do something…
+    var index = $(this).attr('data-index')
+    var id=$(this).attr('data-id');
+    var qufu=$(this).attr('data-qufu');
+    args = {"id":id, "type":"cpu"}
+
+    $.getJSON('/zabbix_graph_get/',args, function(data){
+        var str = data['imagerc']
+        $('#grpahs').html(str)
+    });
+
+    $('#looklist_name').text(qufu+" - CPU")
+    $('#look_info').modal('show')
+})
+
+//Apps_cpu
+$('.look_apps').click(function(){
+  // do something…
+    var id=$(this).attr('data-id');
+    var qufu=$(this).attr('data-qufu');
+    args = {"id":id, "type":"apps"}
+
+    $.getJSON('/zabbix_graph_get/',args, function(data){
+        var str = data['imagerc']
+        $('#grpahs').html(str)
+    });
+
+    $('#looklist_name').text(qufu+" - Apps")
+    $('#look_info').modal('show')
+})
+//Load
+$('.look_load').click(function(){
+  // do something…
+    var id=$(this).attr('data-id');
+    var qufu=$(this).attr('data-qufu');
+    args = {"id":id, "type":"load"}
+
+    $.getJSON('/zabbix_graph_get/',args, function(data){
+        var str = data['imagerc']
+        $('#grpahs').html(str)
+    });
+
+    $('#looklist_name').text(qufu+" - Load")
+    $('#look_info').modal('show')
+})
+//Online
+$('.look_online').click(function(){
+  // do something…
+    var id=$(this).attr('data-id');
+    var qufu=$(this).attr('data-qufu');
+    args = {"id":id, "type":"online"}
+
+    $.getJSON('/zabbix_graph_get/',args, function(data){
+
+        var str = data['imagerc']
+        $('#grpahs').html(str)
+    });
+
+    $('#looklist_name').text(qufu+" - Online")
+    $('#look_info').modal('show')
+
+})
+
 
 $('.update').click(function(){
     var id=$(this).attr('data-id');
@@ -191,7 +296,6 @@ $('.update').click(function(){
         $('#master_slave').val(data['master_slave']);
         $("#server_id option[value='" + data['server_id'] +"']").attr("selected",true);
     });
-
     $('#updateModel').modal('show')
 });
 
@@ -244,9 +348,9 @@ $('.del').click(function(){
 });
 
 
-$('#editable').DataTable({
+var t = $('#editable').DataTable({
     "bDestroy": true,
-    "iDisplayLength": 100,
+    "iDisplayLength": 15,
     "language": {
         "lengthMenu": "每页 _MENU_ 条记录",
         "zeroRecords": "没有找到记录",
@@ -261,7 +365,18 @@ $('#editable').DataTable({
         "sLast": "末页"
         }
     },
-    "order": [[ 0,"asc" ]]
-})
+
+    //"order": [[ 2,"asc" ]]
+});
+//给每一行的前面加一个索引,即序号所在列
+t.on('order.dt search.dt',
+    function() {
+        t.column(0, {
+            search: 'applied',
+            order: 'applied'
+        }).nodes().each(function(cell, i) {
+            cell.innerHTML = i + 1;
+        });
+    }).draw();
 </script>
 {% endblock %}

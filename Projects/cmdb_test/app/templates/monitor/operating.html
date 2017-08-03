@@ -20,7 +20,7 @@
                 <td width="40">Battle版本</td>
                 <td width="40">PVR版本</td>
                 <td width="40">State版本</td>
-                <td width="40">Transfer版本</td>
+               <!--  <td width="40">Transfer版本</td> -->
             </tr>
           </thead>
           <tbody align="center">
@@ -34,7 +34,7 @@
                     <td class="status_info">{{ server['batt_v'] }}</td>
                     <td class="status_info">{{ server['pvr_v'] }}</td>
                     <td class="status_info">{{ server['state_v'] }}</td>
-                    <td class="status_info">{{ server['trans_v'] }}</td>
+                 <!--    <td class="status_info">{{ server['trans_v'] }}</td> -->
                 </tr>
             {% endfor %}
           </tbody>
@@ -47,8 +47,9 @@
       </div>
 
 {% endblock %}
-{% block javascipt %}
-    <script type="text/javascript" language="javascript">
+{% block js %}
+    <script type="text/javascript">
+        console.log('aaaaaaa')
         $(".status_info").each(function(i){
             var content = new Number($(this).text());
                 if(isNaN(content)){
@@ -61,6 +62,7 @@
         )
         $(".status_info_match").each(function(i){
             var content = new Number($(this).text());
+
             console.log(content)
                 if(!isNaN(content)){
                     $(this).css({"background-color":"#dff0af",

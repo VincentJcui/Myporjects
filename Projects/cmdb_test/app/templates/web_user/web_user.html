@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% block title %}官网用户管理{% endblock %}
+{% block web_user %}active{% endblock %}
+{% block main %}
+    <div class="table-responsive">
+    <p>
+        <input type="text" id="sel_data" class="btn btn-default uidnums">
+        <a>
+            <select id="type_select" name="type_select" class="btn btn-default type_select">
+                <option value="uid">UID</option>
+               <option value="nickname">Nickname</option>
+                <!-- <option value="bandwidth">Email</option> -->
+           </select>
+            <button type="submit" id="user_select"  class="btn btn-success type">查询</button></a>
+        </a>
+        <a>
+            <input type="text" id="newpassword" name="newpassword" class="btn btn-default newpassword" >
+            <button type="submit" id="changepass"  class="btn btn-success changepass">修改密码</button></a>
+        </a>
+    </p>
+    <table class="table table-bordered table-striped table-hover info" id="editable">
+        <thead align="center" >
+            <tr class="active">
+                <td id="new_uid" >UID</td>
+                <td >Nickname</td>
+                <td >password</td>
+                <td >email</td>
+                <td >ip</td>
+            </tr>
+        </thead>
+        <tbody id="result" class="text-center middle">
+        <!--
+            {% if datas %}
+                {% for data in datas %}
+                    <tr class="gradeX">
+                        <td  class="text-center">{{ data.uid }}</td>
+                        <td  class="text-center">{{ data.name }}</td>
+                        <td  class="text-center">{{ data.pass }}</td>
+                        <td  class="text-center">{{ data.email }}</td>
+                        <td  class="text-center">{{ data.ip }}</td>
+                        <td  class="text-center">{{ data.regist }}</td>
+                        <td  class="text-center">{{ data.login }}</td>
+                        <td  class="text-center">aaaaaaaaaaaa</td>
+                    </tr>
+                {% endfor %}
+            {% endif %}
+            -->
+        </tbody>
+    </table>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript">
+        jQuery(document).ready(function () {
+            jQuery('#user_select').on('click', function () {
+                var sel_data = jQuery('#sel_data').val()
+                var type_s = jQuery('#type_select').val()
+                if (type_s == "uid"){
+                    var parm = {"uid":sel_data}
+                }else if(type_s == "nickname"){
+                    var parm = {"nickname":sel_data}
+                }
+                $.ajax({
+                    url: '/web_user/',
+                    type: 'post',
+                    cache: false,
+                    dataType: 'json',
+                    data: parm,
+                    success: function (data) {
+                            var tmp = $('<tr><td>' + data.datas['uid'] + '</td><td>' + data.datas['name'] + '</td><td>' + data.datas['pass'] +
+                                '</td><td>' + data.datas['email'] + '</td><td>' + data.datas['ip'] + '</td></tr>')
+                            $('#result').html(tmp)
+                    },
+                })
+            })
+
+            jQuery('#changepass').on('click',function () {
+                var newpass = jQuery('#newpassword').val()
+                var sel_data = jQuery('#sel_data').val()
+                var type_s = jQuery('#type_select').val()
+                if (newpass == ''){
+                    alert('密码不能为空')
+                }else{
+                    if (type_s == "uid"){
+                        var parm = {"uid":sel_data, "newpass":newpass}
+                    }else if(type_s == "nickname"){
+                        var parm = {"nickname":sel_data, "newpass":newpass}
+                    }
+                    $.post('/web_update_pass/',parm, function (data) {
+                        if (data.newdata.success){
+                            var tmp = $('<tr><td>' + data.newdata.success['uid'] + '</td><td>' + data.newdata.success['name'] + '</td><td>' + data.newdata.success['pass'] +
+                                '</td><td>' + data.newdata.success['email'] + '</td><td>' + data.newdata.success['ip'] + '</td></tr>')
+                            $('#result').html(tmp)
+                            alert("密码修改成功")
+                        }else {
+                            alert(data.newdata.error)
+                        }
+                    })
+                }
+            })
+        })
+    </script>
+{% endblock %}
