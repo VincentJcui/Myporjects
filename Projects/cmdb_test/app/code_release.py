@@ -10,6 +10,11 @@ import db
 import pysvn
 import shutil
 import subprocess
+from utils import util
+
+display = util.Display()
+display.display['code'] = 'block'
+dis = display.display
 
 svnurl = 'https://svn.lieyan.com.cn/repos/ppweb/webp2p/flashp2p/operations/Script/python/cmdb'
 svnSavePath = '/home/oop/projects/svnCode'
@@ -34,13 +39,17 @@ def code_release():
           "username varchar(20) not null comment '发布人'," \
           "date varchar(30) not null comment '发布日期') " \
           "ENGINE=InnoDB AUTO_INCREMENT=69 DEFAULT CHARSET=utf8 COMMENT='代码发布版本说明'"
-    db.createTable(sql)
+    try:
+        db.get_one(['id'], 'id = "1"', 'codePublish', list=True)
+    except BaseException, e:
+        print e
+        db.createTable(sql)
     columns = ['id', 'version', 'introduction', 'username', 'date']
     history = db.get_list(columns, 'codePublish order by id desc')
     username = session['username']
     date = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     if request.method == 'GET':
-        return render_template('code/code_release.html', username=username, infos=history)
+        return render_template('code/code_release.html', username=username, infos=history, display = dis)
     elif request.method == 'POST':
         info = request.form.to_dict()
         if info['introduction'] == '':
@@ -134,7 +143,11 @@ def gm_update():
           "status varchar(10) not null comment '更新状态'," \
           "username varchar(20) not null comment '更新操作人') " \
           "ENGINE=InnoDB AUTO_INCREMENT=69 DEFAULT CHARSET=utf8 COMMENT='GM更新说明表'"
-    db.createTable(sql)
+    try:
+        db.get_one(['id'], 'id = "1"', 'gm_update', list=True)
+    except BaseException, e:
+        print e
+        db.createTable(sql)
     columns = ['filename', 'update_time', 'status', 'username']
     history = db.get_list(columns, 'gm_update order by id desc limit 5')
-    return render_template('code/gm_update.html', infos=history)
+    return render_template('code/gm_update.html', infos=history, display = dis)

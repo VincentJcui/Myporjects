@@ -12,7 +12,9 @@ from utils import util
 from tasks import send_mail
 #from flask_socketio import SocketIO, emit
 # from flask.ext.login import current_user, logout_user
-
+display = util.Display()
+display.display['user'] = 'block'
+dis = display.display
 
 # app.secret_key=os.urandom(32)
 app.secret_key='111'
@@ -47,19 +49,19 @@ def login():
 @login_required
 def user_list():
     user_list = db.user_list()
-    return render_template('users/users.html', users=user_list)
+    return render_template('users/users.html', users=user_list, display = dis)
 
 @app.route('/user_center/')
 @login_required
 def user_center():
     user = db.user_info(session.get('username'))
-    return render_template('users/user_center.html', user=user)
+    return render_template('users/user_center.html', user=user, display = dis)
 
 @app.route('/users/regedit/')
 @login_required
 def user_regedit():
     user_login = {'user':session.get('username')}
-    return render_template('users/user_create.html', session = user_login)
+    return render_template('users/user_create.html', session = user_login, display = dis)
 
 
 @app.route('/users/chpwdadmin/', methods=['POST'])

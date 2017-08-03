@@ -7,21 +7,23 @@ import db
 import json
 from utils import util
 
-
+display = util.Display()
+display.display['assets'] = 'block'
+dis = display.display
 
 @app.route('/idc/')
 @login_required
 def idc():
     idc_columns = ['id', 'name', 'address', 'adminer', 'phone', 'cabinet_num', 'switch_num']
     idcs = db.get_list(idc_columns, 'idc')
-    return render_template('assets/idc/idc.html', idcs=idcs)
+    return render_template('assets/idc/idc.html', idcs=idcs, display = dis)
 
 
 @app.route('/idcadd/', methods=['POST', 'GET'])
 @login_required
 def idcadd():
     if request.method == 'GET':
-        return render_template('assets/idc/idcadd.html')
+        return render_template('assets/idc/idcadd.html', display = dis)
     else:
         data = request.form.to_dict()
         util.WriteLog('infoLogger').warning('%s add idc %s' % (session['username'], data['name']))
@@ -69,7 +71,7 @@ def cabinet():
     for cabinet in cabinets:
         if cabinet['idc_id'] in idcs.keys():
             cabinet['idc_id'] = idcs[cabinet['idc_id']]
-    return render_template('assets/cabinet/cabinet.html', cabinets=cabinets)
+    return render_template('assets/cabinet/cabinet.html', cabinets=cabinets, display = dis)
 
 
 @app.route('/cabinetadd/', methods=['POST', 'GET'])
@@ -81,7 +83,7 @@ def cabinetadd():
         idcinfo = []
         for idc in idcs:
             idcinfo.append({'id': idc['id'], 'name': idc['name']})
-        return render_template('assets/cabinet/cabinetadd.html', idcinfo=idcinfo)
+        return render_template('assets/cabinet/cabinetadd.html', idcinfo=idcinfo, display = dis)
     else:
         data = request.form.to_dict()
         util.WriteLog('infoLogger').warning('%s add cabinet %s' % (session['username'], data['name']))
@@ -165,7 +167,7 @@ def server():
         for idc in idcs:
             if idc['id'] == server['idc_id']:
                 server['idc_id'] = idc['name']
-    return render_template('assets/server/server.html', servers=servers)
+    return render_template('assets/server/server.html', servers=servers, display = dis)
 
 
 @app.route('/cabinetinfo/')
@@ -179,7 +181,7 @@ def cabinetinfo():
 @login_required
 def serveradd():
     if request.method == 'GET':
-        return render_template('assets/server/serveradd.html')
+        return render_template('assets/server/serveradd.html', display = dis)
     else:
         data = request.form.to_dict()
         util.WriteLog('infoLogger').warning('%s add server %s' % (session['username'], data['hostname']))
@@ -227,7 +229,7 @@ def virtuals():
     for virtual in virtuals:
         if virtual['server_id'] in servers.keys():
             virtual['server_id'] = servers[virtual['server_id']]
-    return render_template('assets/virtuals/virtuals.html', virtuals=virtuals)
+    return render_template('assets/virtuals/virtuals.html', virtuals=virtuals, display = dis)
 
 
 @app.route('/serverinfo/')
@@ -242,7 +244,7 @@ def serverinfo():
 @login_required
 def virtualadd():
     if request.method == 'GET':
-        return render_template('assets/virtuals/virtualadd.html')
+        return render_template('assets/virtuals/virtualadd.html', display = dis)
     else:
         data = request.form.to_dict()
         util.WriteLog('infoLogger').warning('%s add virtual %s' % (session['username'], data['hostname']))
@@ -295,7 +297,7 @@ def inner():
     db.createTable(sql)
     columns = ['id', 'hostname', 'ip', 'cpu', 'mem', 'disk', 'physicalHost', 'user']
     data = db.get_list(columns, 'innerServer')
-    return render_template('assets/inner/inner.html', inners=data)
+    return render_template('assets/inner/inner.html', inners=data, display = dis)
 
 
 @app.route('/inneradd/', methods=['POST', 'GET'])

@@ -11,7 +11,7 @@ import re
 class Zabbixtools:
     #初始化,地址,头部信息
     def __init__(self):
-        self.url = "http://zabbix.lieyan.com.cn/api_jsonrpc.php"
+        self.url = "http://zabbix域名/api_jsonrpc.php"
         self.header = {"Content-Type": "application/json"}
         self.username = 'admin'
         self.password = 'zabix密码'

@@ -11,11 +11,16 @@ celery = Celery('tasks', broker='amqp://guest@localhost')
 # smtp.login(username, password) 用户名，密码不正确 或者 mail未开启IMAP POP3等协议
 # 为了避免密码泄露造成邮箱安全隐患，需设置客户端授权码，用授权码代替密码在客户端登录邮箱（126邮箱）
 
-mailto_list = ['yongwei.zhang@cloudacc-inc.com']
-mail_host = "smtp.126.com"  # 设置服务器
-mail_user = "nmgshuishui"  # 用户名
-mail_pass = "nmshuishui888"  # 口令,授权码
-mail_postfix = "126.com"  # 发件箱的后缀
+mailto_list = ['mis@cloudacc-inc.com']
+# mail_host = "smtp.126.com"  # 设置服务器
+# mail_user = "nmgshuishui"  # 用户名
+# mail_pass = "nmshuishui888"  # 口令,授权码
+# mail_postfix = "126.com"  # 发件箱的后缀
+mail_host = "smtp.163.com"  # 设置服务器
+mail_user = "用户名"  # 用户名
+mail_pass = "授权码"  # 口令,授权码
+mail_postfix = "163.com"  # 发件箱的后缀
+
 
 
 @celery.task

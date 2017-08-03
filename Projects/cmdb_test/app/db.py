@@ -13,8 +13,10 @@ def calc_md5(password):
     return md5.hexdigest()
 
 def auth_user(username, password):
-    sql = "select * from users where name='%s' and password='%s'" % (username, password)
-    sql_count, rt_list = execute_sql(sql)
+    sql = "select status from users where name='%s' and password='%s'" % (username, password)
+    sql_count, status = execute_sql(sql)
+    if status[0][0] != str(0) :
+        return False
     if sql_count == 0:
         return False
     last_login = datetime.now()
@@ -158,6 +160,7 @@ def get_list(columns, table, where=False, host=None, user=None, passwd=None, por
         sql = "select %s from %s where %s" % (",".join(columns), table, where)
     else:
         sql = "select %s from %s" % (",".join(columns), table)
+
     if host:
         sql_count, rt_list = execute_sql(sql, host, user, passwd, port, db)
     else:
@@ -206,14 +209,8 @@ def createTable(sql):
         return {'code':1, 'errmsg':'创建失败'}
 
 
-
-def execute_sql(sql, host='127.0.0.1', user='root', passwd='root', port=3306, db='oop', fetch=True):
-    try:
-        # 默认先尝试连接永伟的虚拟机mysql
-        conn = MySQLdb.connect(host=host, user=user, passwd=passwd, port=port, db=db, charset='utf8')
-    except:
-        # 失败后则连接我自己的虚拟机mysql
-        conn = MySQLdb.connect(host='10.0.12.50', user='oop', passwd='oop', port=port, db=db, charset='utf8')
+def execute_sql(sql, host='localhost', user='root', passwd='root', port=3306, db='oop', fetch=True):
+    conn = MySQLdb.connect(host=host, user=user, passwd=passwd, port=port, db=db, charset='utf8')
     cur = conn.cursor()
     sql_count = 0
     rt_list = []

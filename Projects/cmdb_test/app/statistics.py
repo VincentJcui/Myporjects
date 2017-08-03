@@ -1,7 +1,6 @@
 #encoding:utf-8
 #by 2016-09-26
-from flask import render_template, request, session, send_file, send_from_directory, make_response, jsonify
-from login_require import login_required
+from flask import render_template, request
 from . import app
 from login_require import login_required
 import db
@@ -12,6 +11,11 @@ from StringIO import StringIO
 from utils import util
 from utils.QcloudApi.qcloudapi import QcloudApi
 import calendar
+from utils import pager
+
+display = util.Display()
+display.display['statics'] = 'block'
+dis = display.display
 
 '''
     result['4399frame'] = frame_4399_list
@@ -30,7 +34,7 @@ import calendar
 
 columns_day_column = ['qufu','platform','serverid','data_date','new_reg_user_num','login_user_num','user_login_num',
                    'pay_user_num','pay_num','pay_user_ARPU','avg_online','mountain_online','avg_online_ARPU',
-                   'login_user_pay_trans_rate','new_reg_user_pay_transe_rate','pay_money','new_pay_user_num']
+                   'login_user_pay_trans_rate','new_reg_user_pay_transe_rate','pay_money','new_pay_user_num','pay_m_pt','pay_m_gw']
 data_total_column = ['qufu','platform','serverid','data_date','new_reg_user_num','login_user_num','user_login_num',
                  'pay_user_num','pay_num','pay_user_ARPU','mountain_online','login_user_pay_trans_rate','total_reg_user_pay_transe_rate','pay_money']
 yestoday = datetime.date.today() + datetime.timedelta(days=-1)
@@ -48,7 +52,22 @@ def data_day():
         platform = 7
     where = "data_date=" + "'" + str(date) + "'" + ' and platform=' + str(platform) + ' order by qufu'
     datas = db.get_list(columns_day_column, 'data_day', where)
-    return render_template('statistics/data_day.html', datas=datas, date=date, platform=platform)
+    for data in datas:
+        if data['platform'] != 21 and data['platform'] != 3:
+            data['pay_money'] /= 10.00
+            try:
+                data['pay_m_gw'] /= 10.00
+                data['pay_m_pt'] /= 10.00
+            except BaseException as e:
+                data['pay_m_gw'] = 0.0
+                data['pay_m_pt'] = 0.0
+        else:
+            try:
+                data['pay_m_gw'] /= 11.00
+            except BaseException as e:
+                data['pay_m_gw'] = 0.0
+                data['pay_m_pt'] = 0.0
+    return render_template('statistics/data_day.html', datas=datas, date=date, platform=platform, display = dis)
 
 
 @app.route('/data_download/')
@@ -180,11 +199,25 @@ def data_week():
 
 
     where = "data_date=" + "'" + str(day) + "'" + ' and platform=' + str(platform) + ' order by qufu'
-    datas = db.get_list(columns_day_column, 'data_week', where)
+    columns_week_column = columns_day_column[:-2]
+    datas = db.get_list(columns_week_column, 'data_week', where)
 
     for data in datas:
         data['data_date'] = week_dates
-    return render_template('statistics/data_week.html', datas=datas, date=date, platform=platform)
+        if data['platform'] != 21 and data['platform'] != 3:
+            data['pay_money'] /= 10.00
+            try:
+                data['pay_m_gw'] /= 10.00
+                data['pay_m_pt'] /= 10.00
+            except BaseException as e:
+                data['pay_m_gw'] = 0.0
+                data['pay_m_pt'] = 0.0
+        else:
+            try:
+                data['pay_m_gw'] /= 11.00
+            except BaseException as e:
+                data['pay_m_gw'] = 0.0
+    return render_template('statistics/data_week.html', datas=datas, date=date, platform=platform, display = dis)
 
 
 # 月统计是上个月一月的统计数据，查询方法就是查询月统计表中最后一天的数据即可
@@ -217,7 +250,21 @@ def data_month():
 
     for data in datas:
         data['data_date'] = lastMonth
-    return render_template('statistics/data_month.html', datas=datas, date=date, platform=platform)
+        if data['platform'] != 21 and data['platform'] != 3:
+            data['pay_money'] /= 10.00
+            try:
+                data['pay_m_gw'] /= 10.00
+                data['pay_m_pt'] /= 10.00
+            except BaseException as e:
+                data['pay_m_gw'] = 0.0
+                data['pay_m_pt'] = 0.0
+        else:
+            try:
+                data['pay_m_gw'] /= 11.00
+            except BaseException as e:
+                data['pay_m_gw'] = 0.0
+                data['pay_m_pt'] = 0.0
+    return render_template('statistics/data_month.html', datas=datas, date=date, platform=platform, display = dis)
 
 @app.route('/data_total/')
 @login_required
@@ -225,12 +272,12 @@ def data_total():
     day = datetime.date.today() + datetime.timedelta(days=-1)
     where = "data_date=" + "'" + str(day) + "'"
     datas = db.get_list(data_total_column, 'data_total', where)
-    return render_template('statistics/data_total.html', datas=datas)
+    return render_template('statistics/data_total.html', datas=datas, display = dis)
 
 @app.route('/data_trend/')
 @login_required
 def data_trend():
-    return render_template('statistics/data_trend.html')
+    return render_template('statistics/data_trend.html', display = dis)
 
 @app.route('/data_trend/data/', methods=['POST','GET'])
 @login_required
@@ -269,7 +316,7 @@ def stat_data_import(params):
         print e
     columns_day = ['qufu','platform','serverid','data_date','new_reg_user_num','login_user_num','user_login_num',
                    'pay_user_num','pay_num','pay_user_ARPU','avg_online','mountain_online','avg_online_ARPU',
-                   'login_user_pay_trans_rate','new_reg_user_pay_transe_rate','pay_money','new_pay_user_num']
+                   'login_user_pay_trans_rate','new_reg_user_pay_transe_rate','pay_money','new_pay_user_num','pay_m_pt','pay_m_gw']
     columns_total = ['qufu','platform','serverid','data_date','new_reg_user_num','login_user_num','user_login_num',
                      'pay_user_num','pay_num','pay_user_ARPU','mountain_online','login_user_pay_trans_rate','total_reg_user_pay_transe_rate','pay_money']
     value_day = []
@@ -277,6 +324,8 @@ def stat_data_import(params):
         value_day.append(x)
     for y in params['data_day']:
         value_day.append(y)
+    for z in params['data_day_duizhang']:
+        value_day.append(z)
     data=dict(zip(columns_day, value_day))
     data['pay_user_ARPU'] = round(data['pay_user_ARPU'], 2)
     data['avg_online'] = round(data['avg_online'], 2)
@@ -296,14 +345,15 @@ def stat_data_import(params):
         value_week.append(x)
     for y in params['data_week']:
         value_week.append(y)
-    data=dict(zip(columns_day, value_week))
+    columns_week = columns_day[:-2]
+    data=dict(zip(columns_week, value_week))
     data['pay_user_ARPU'] = round(data['pay_user_ARPU'], 2)
     data['avg_online'] = round(data['avg_online'], 2)
     data['avg_online_ARPU'] = round(data['avg_online_ARPU'], 2)
     data['login_user_pay_trans_rate'] = round(data['login_user_pay_trans_rate'], 2)
     data['new_reg_user_pay_transe_rate'] = round(data['new_reg_user_pay_transe_rate'], 2)
     where1 =  'platform=' + platform + ' and ' + 'serverid=' + serverid + ' and ' + "data_date='%s'" % date
-    result = db.get_one(columns_day, where1, 'data_week', list=True)
+    result = db.get_one(columns_week, where1, 'data_week', list=True)
     if len(result) > 0:
         db.update(data, where1, 'data_week')
     else:
@@ -315,6 +365,8 @@ def stat_data_import(params):
         value_month.append(x)
     for y in params['data_month']:
         value_month.append(y)
+    for z in params['data_month_duizhang']:
+        value_month.append(z)
     data=dict(zip(columns_day, value_month))
     data['pay_user_ARPU'] = round(data['pay_user_ARPU'], 2)
     data['avg_online'] = round(data['avg_online'], 2)
@@ -378,7 +430,10 @@ def stat_import(params):
 
 
 def stat_export(collections,tablename,ptname,date):
-    rt_list = db.get_one(['*'],"ptname = '%s' order by date" % ptname,tablename,list=True)
+    # 只加载最近二年的数据
+    limit_date = datetime.date.today() + datetime.timedelta(days=-720)
+    rt_list = db.get_one(['*'], "ptname = '%s' and date >= '%s' order by date" % (ptname, limit_date), tablename,
+                         list=True)
     rt = []
     for i in rt_list:
         rt.append(dict(zip(collections,i)))
@@ -476,11 +531,21 @@ def stat_week_up_down(info,rt_dict):
     return rt_dict
 
 
+def pages(rt_list, base_url, current_page, avg_page):
+    # 分页处理的函数
+    page = pager.Pager(current_page, avg_page)
+    server_list = rt_list[page.start_page:page.end_page]
+    page_list = page.page_str(len(rt_list), base_url)
+    return server_list, page_list
+
+
+
 @app.route('/battle_frame_rate/',methods=['POST','GET'])
 @login_required
 def battle_frame_rate():
     params = request.args if request.method == 'GET' else request.form
     ptname = params.get('ptname', '4399')
+    current_page = params.get('page', 1)
     collections = (
     'id', 'ptname', 'date', 'frame_49', 'frame_55', 'frame_60', 'frame_49_new', 'frame_55_new', 'frame_60_new')
     rt_dict = stat_export(collections, 'battle_frame_rate', ptname, '2016-09')
@@ -490,7 +555,8 @@ def battle_frame_rate():
     new_dict = stat_day_up_down('frame', rt_dict)
     new_dict = stat_week_up_down('frame', new_dict)
     new_dict = stat_month_up_down('frame', new_dict)
-    return render_template('statistics/battle_frame_rate.html', frame_list=new_dict[::-1], type_sel=2)
+    server_list, page_list = pages(new_dict[::-1], '/battle_frame_rate/', current_page, 17)
+    return render_template('statistics/battle_frame_rate.html', frame_list=server_list, page_list=page_list, type_sel=2, display = dis)
 
 
 @app.route('/enter_battle/',methods=['POST','GET'])
@@ -498,6 +564,7 @@ def battle_frame_rate():
 def enter_battle():
     params = request.args if request.method == 'GET' else request.form
     ptname = params.get('ptname', '4399')
+    current_page = params.get('page', 1)
     collections = (
         'id', 'ptname', 'date', 'success', 'battle_res_load', 'army_success', 'room_success', 'lobby_success',
         'frist_root_success', 'frist_lobby_success', 'frist_battle_success', 'fighting_drop' \
@@ -506,7 +573,8 @@ def enter_battle():
     for x in rt_dict:
         new_date = x['date'].strftime('%Y-%m-%d')
         x['date'] = new_date
-    return render_template('statistics/enter_battle.html', enter_list=rt_dict[::-1], type_sel=1)
+    server_list, page_list = pages(rt_dict[::-1], '/enter_battle/', current_page, 17)
+    return render_template('statistics/enter_battle.html', enter_list=server_list, page_list=page_list, type_sel=1, display = dis)
 
 
 @app.route('/game_kadun/',methods=['POST','GET'])
@@ -514,6 +582,7 @@ def enter_battle():
 def game_kadun():
     params = request.args if request.method == 'GET' else request.form
     ptname = params.get('ptname', '4399')
+    current_page = params.get('page', 1)
     collections = (
         'id', 'ptname', 'date', 'caton_5', 'caton_15', 'caton_30', 'caton_50', 'caton_70',
         'caton_95', 'caton_100', 'caton_5_new', 'caton_15_new' \
@@ -522,13 +591,15 @@ def game_kadun():
     for x in rt_dict:
         new_date = x['date'].strftime('%Y-%m-%d')
         x['date'] = new_date
-    return render_template('statistics/game_kadun.html', caton_list=rt_dict[::-1], type_sel=6)
+    server_list, page_list = pages(rt_dict[::-1], '/game_kadun/', current_page, 17)
+    return render_template('statistics/game_kadun.html', caton_list=server_list, page_list=page_list, type_sel=6, display = dis)
 
 @app.route('/game_load/',methods=['POST','GET'])
 @login_required
 def game_load():
     params = request.args if request.method == 'GET' else request.form
     ptname = params.get('ptname', '4399')
+    current_page = params.get('page', 1)
     collections = (
         'id', 'ptname', 'date', 'load_config', 'load_res')
     rt_dict = stat_export(collections, 'game_load', ptname, '2016-09')
@@ -538,26 +609,30 @@ def game_load():
     new_dict = stat_day_up_down('load', rt_dict)
     new_dict = stat_week_up_down('load', new_dict)
     new_dict = stat_month_up_down('load', new_dict)
-    return render_template('statistics/game_load.html', load_list=new_dict[::-1], type_sel=4)
+    server_list, page_list = pages(rt_dict[::-1], '/game_load/', current_page, 18)
+    return render_template('statistics/game_load.html', load_list=server_list, page_list=page_list, type_sel=4, display = dis)
 
 @app.route('/game_mem/',methods=['POST','GET'])
 @login_required
 def game_mem():
     params = request.args if request.method == 'GET' else request.form
     ptname = params.get('ptname', '4399')
+    current_page = params.get('page', 1)
     collections = (
         'id', 'ptname', 'date', 'memory_500', 'memory_700', 'memory_900', 'memory_1100')
     rt_dict = stat_export(collections, 'game_mem', ptname, '2016-09')
     for x in rt_dict:
         new_date = x['date'].strftime('%Y-%m-%d')
         x['date'] = new_date
-    return render_template('statistics/game_mem.html', memory_list=rt_dict[::-1], type_sel=5)
+    server_list, page_list = pages(rt_dict[::-1], '/game_mem/', current_page, 18)
+    return render_template('statistics/game_mem.html', memory_list=server_list, page_list=page_list, type_sel=5, display = dis)
 
 @app.route('/game_mouse/',methods=['POST','GET'])
 @login_required
 def game_mouse():
     params = request.args if request.method == 'GET' else request.form
     ptname = params.get('ptname', '4399')
+    current_page = params.get('page', 1)
     collections = (
     'id', 'ptname', 'date', 'mouse_20', 'mouse_30', 'mouse_50', 'mouse_75', 'mouse_20_new', 'mouse_30_new',
     'mouse_50_new', 'mouse_75_new')
@@ -568,7 +643,8 @@ def game_mouse():
     new_dict = stat_day_up_down('mouse', rt_dict)
     new_dict = stat_week_up_down('mouse', new_dict)
     new_dict = stat_month_up_down('mouse', new_dict)
-    return render_template('statistics/game_mouse.html', mouse_list=new_dict[::-1], type_sel=3)
+    server_list, page_list = pages(rt_dict[::-1], '/game_mouse/', current_page, 17)
+    return render_template('statistics/game_mouse.html', mouse_list=server_list, page_list=page_list, type_sel=3, display = dis)
 
 #用于调用api获取腾讯cdn使用数据
 def get_qqcloud_cdn_stat(start_date, end_date, type):
@@ -654,7 +730,7 @@ def data_cdn_stat():
     end_date = params.get('end_date',day)
     type = params.get('type','flux')
     list,unit = get_qqcloud_cdn_stat(start_date, end_date, type)
-    return render_template('statistics/data_cdn.html', datas=list, start_date=start_date, end_date=end_date, unit=unit )
+    return render_template('statistics/data_cdn.html', datas=list, start_date=start_date, end_date=end_date, unit=unit , display = dis )
 
 # 帧率统计那些
 @app.route('/statapi/',methods=['POST'])

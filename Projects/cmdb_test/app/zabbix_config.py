@@ -1,18 +1,26 @@
 # encoding:utf-8
 ''
+import cookielib
+import urllib2
+import urllib
+from datetime import datetime
+
+import os
+from flask import render_template, request, jsonify, redirect
+from . import app
+from login_require import login_required
+from utils import util, zabbix_api
+import db
 '''
 zabbix配置界面,前端加载配置
 by 2017-04-05
 '''
 
-from flask import render_template, request, jsonify, redirect
-from . import app
-from login_require import login_required
-from utils import util, zabbix_api
-import json
-import datetime, time
-import traceback
-import db
+
+
+display = util.Display()
+display.display['monitor'] = 'block'
+dis = display.display
 
 zabbix = zabbix_api.Zabbixtools()
 
@@ -84,18 +92,74 @@ def get_server_monitor_status():
             host_list.append(host_info)
     return host_list
 
+#获取当前状态下的zabbix监控图,保存至临时目录tmp目录下
+class ZabbixGraph(object):
+    def __init__(self,url="http://zabbix域名/index.php",name="admin",password='LADYgaga2015'):
+        self.url=url
+        self.name=name
+        self.passwd=password
+        #初始化的时候生成cookies
+        cookiejar = cookielib.CookieJar()
+        urlOpener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cookiejar))
+        values = {"name":self.name,'password':self.passwd,'autologin':1,"enter":'Sign in'}
+        data = urllib.urlencode(values)
+        request = urllib2.Request(url, data)
+        try:
+            urlOpener.open(request,timeout=10)
+            self.urlOpener=urlOpener
+        except urllib2.HTTPError, e:
+            print e
+    def GetGraph(self,url="http://zabbix域名/chart2.php", values={'width': 800, 'height': 200, 'graphid': '2028', 'stime': '20160907090409', 'period': 3600}, image_dir='/tmp/zabbix'):
+        data=urllib.urlencode(values)
+        request = urllib2.Request(url,data)
+        url = self.urlOpener.open(request)
+        image = url.read()
+        imagename="%s/%s_%s.jpg" % (image_dir, values["graphid"], values["stime"])
+        #每次下载临时图片到该目录下,均把不是当天的文件删掉
+        for i in os.listdir(image_dir):
+            if datetime.now().strftime('%Y%m%d') not in i:
+                os.remove('%s/%s' % (image_dir,i))
+        f=open(imagename,'wb')
+        f.write(image)
+        f.close()
+        return imagename
 
 @app.route('/zabbix_monitor/', methods=['POST', 'GET'])
 @login_required
 def zabbix_monitor():
     if request.method == 'GET':
-        return render_template('zabbix/zabbix_monitor.html')
+        return render_template('zabbix/zabbix_monitor.html', display = dis)
     host_list = get_server_monitor_status()
     print host_list[-1]
     # return render_template('zabbix/zabbix_monitor.html', host_list = host_list)
     return jsonify(host_list=host_list)
     pass
 
+@app.route('/zabbix_graph_get/', methods=['POST', 'GET'])
+@login_required
+def zabbix_graph_get():
+    graph = ZabbixGraph()
+    columns = ['id', 'hostname']
+    params = request.args if request.method == 'GET' else request.form
+    id = params.get("id")
+    type = params.get("type")
+    if type == "online" :
+        graphname = 'onlineplayer'
+    elif type == 'cpu':
+        graphname = 'cpu'
+    elif type == 'apps':
+        graphname = 'CPU_apps'
+    else:
+        graphname = 'Cpu_load'
+    hostname = db.get_one(columns, "id=" + id, 'virtuals',list=True)[0][1].split("/")[1]
+    hostid = zabbix.host_get_hostid(hostname+".ppweb.com.cn").get('hostid', 0)
+    graphid = zabbix.get_grapgs(hostid,graphname)
+    # print id, type, hostname, hostid, graphid
+    values = {'width': 750, 'height': 210, 'graphid': graphid, 'stime': datetime.now().strftime('%Y%m%d%H%M%S'), 'period': 21600}
+    image_name = graph.GetGraph("http://zabbix域名/chart2.php", values, "app/static/zabbix")
+    imgsrc = '<img src="'+image_name.replace('app','')+'"></br>'
+    return jsonify(imagerc=imgsrc)
+    pass
 
 if __name__ == '__main__':
     pass

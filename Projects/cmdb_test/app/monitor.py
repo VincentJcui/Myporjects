@@ -11,6 +11,9 @@ import traceback
 from tasks import celery
 from utils import pager
 
+display = util.Display()
+display.display['monitor'] = 'block'
+dis = display.display
 
 @app.route('/mongo_monitor/')
 @login_required
@@ -26,10 +29,10 @@ def mongo_monitor():
     new_server = []
     for x in servers:
         if x['back_num'] != 0:
-            new_server.insert(0, x)
+            new_server.insert(0,x)
         else:
             new_server.append(x)
-    return render_template('monitor/mongo_monitor.html', servers=new_server)
+    return render_template('monitor/mongo_monitor.html', servers=new_server, display = dis)
 
 @app.route('/mongo_update/', methods=['POST'])
 @login_required
@@ -68,7 +71,7 @@ def mongo_update():
         db.update(data, where, 'virtuals')
     except:
         traceback.print_exc()
-    return render_template('monitor/mongo_monitor.html')
+    return render_template('monitor/mongo_monitor.html', display = dis)
 
 def mongoback_info_auto_refresh_getip():
     ip_list = []
@@ -139,8 +142,7 @@ def update_mongo_starttime():
         time.strptime(start_time, '%H:%M')
         hour = time.strptime(start_time, '%H:%M').tm_hour
         min = time.strptime(start_time, '%H:%M').tm_min
-        cmd = "echo 'ssh密码'|sudo -S sh -c" + ' "' + "echo '%s %s * * * op /home/op/mongo/mongo-admin-utils/bin/fullbackup.sh >/tmp/fullbackup.log 2>&1' > /etc/cron.d/mongo_fullback" % (
-        min, hour) + '"'
+        cmd = "echo 'Lieyan@1206'|sudo -S sh -c" + ' "' + "echo '%s %s * * * op /home/op/mongo/mongo-admin-utils/bin/fullbackup.sh >/tmp/fullbackup.log 2>&1' > /etc/cron.d/mongo_fullback" % (min,hour) + '"'
         util.paramiko_command(request.form.get('wan_ip'), cmd)
         db.update(data, where, 'virtuals')
         data = {"code":0, 'errmsg':'备份开始时间修改成功'}
@@ -154,7 +156,7 @@ def update_mongo_starttime():
 def operating():
     current_page = request.args.get('page', 1)
     server_list, page_list = server_status('/operating/', current_page, 19)
-    return render_template('monitor/operating.html', server_list=server_list, page_list=page_list)
+    return render_template('monitor/operating.html', server_list=server_list, page_list=page_list, display = dis)
 
 
 @app.route('/manager/', methods=['POST', 'GET'])
@@ -162,7 +164,7 @@ def operating():
 def manager():
     current_page = request.args.get('page', 1)
     server_list, page_list = server_status('/manager/', current_page, 12)
-    return render_template('monitor/manager.html', server_list=server_list, page_list=page_list)
+    return render_template('monitor/manager.html', server_list=server_list, page_list=page_list, display = dis)
 
 
 @app.route('/backupServer_monitor/')
@@ -172,10 +174,10 @@ def backupServer_monitor():
     newlist = []
     for x in ip_list:
         if x['backSize'] != '1M':
-            newlist.insert(0, x)
+            newlist.insert(0,x)
         else:
             newlist.append(x)
-    return render_template('monitor/backupServer_monitor.html', infos=newlist)
+    return render_template('monitor/backupServer_monitor.html', infos=newlist, display = dis)
 
 
 def backupServer_monitor_cron():

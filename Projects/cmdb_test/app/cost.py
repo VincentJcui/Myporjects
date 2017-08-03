@@ -6,6 +6,10 @@ from login_require import login_required
 import json
 import datetime
 import db
+from utils import util
+display = util.Display()
+display.display['idc'] = 'block'
+dis = display.display
 
 
 def get_idc_info_date(now_year):
@@ -182,7 +186,7 @@ def idc_trend():
     now_year = params.get('years')
     if now_year is None:
         now_year = datetime.datetime.now().strftime('%Y')
-    return render_template('cost/idc_trend.html',years=now_year)
+    return render_template('cost/idc_trend.html',years=now_year, display = dis)
 
 @app.route('/idc_trend/data/', methods= ['POST', 'GET'])
 @login_required
@@ -206,7 +210,7 @@ def idc_bill():
     all_combined = 0
     for i in access_list:
         all_combined += i.get('combined')
-    return render_template('cost/idc_bill.html', idc_list=access_list, all_combined=all_combined, dates=dates)
+    return render_template('cost/idc_bill.html', idc_list=access_list, all_combined=all_combined, dates=dates, display = dis)
 
 @app.route('/idc_bill/add/', methods=['POST', 'GET'])
 @login_required
