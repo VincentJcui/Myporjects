@@ -71,5 +71,12 @@ sudo apt-get install libssl-dev
     sudo apt-get install rabbitmq-server
 
 # code_release.py
-    sudo apt-get install subversion
     sudo apt-get install python-svn
+    sudo apt-get install python-svn
+    sudo apt-get install svn-workbench
+
+#解决gcc问题
+    sudo apt-get install libxml2-dev libxslt1-dev python-dev
+    sudo apt-get install zlib1g-dev
+    sudo apt-get install libevent-dev
+    sudo pip install lxml
