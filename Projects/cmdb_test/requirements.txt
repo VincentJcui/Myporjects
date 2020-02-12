@@ -14,7 +14,7 @@ cloud-init==0.7.5
 colorama==0.2.5
 configobj==4.7.2
 cryptography==1.9
-Django==1.6
+Django==1.11.28
 django-future==0.2.3
 django-grappelli==2.5.0
 django-mptt==0.6.0
