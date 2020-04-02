@@ -59,7 +59,7 @@ pyserial==2.6
 python-apt===0.9.3.5ubuntu2
 python-debian===0.1.21-nmu2ubuntu2
 pytz==2017.2
-PyYAML==3.10
+PyYAML==5.1
 requests==2.2.1
 SecretStorage==2.0.0
 simplejson==3.3.1
