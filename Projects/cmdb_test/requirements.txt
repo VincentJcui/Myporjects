@@ -22,7 +22,7 @@ django-picklefield==1.0.0
 django-tinymce==1.5.2
 Django-tinymce-filebrowser==0.2.1
 django-utils==0.0.2
-djangorestframework==2.3.14
+djangorestframework==3.11.2
 enum34==1.1.6
 Flask==0.12.2
 Flask-Script==2.0.5
