@@ -5,7 +5,7 @@ asn1crypto==0.22.0
 beautifulsoup4==4.6.0
 billiard==3.5.0.2
 bs4==0.0.1
-celery==4.0.2
+celery==5.2.2
 cffi==1.10.0
 chardet==2.0.1
 Cheetah==2.4.4
